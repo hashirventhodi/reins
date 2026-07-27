@@ -99,5 +99,5 @@ staleness propagates transitively.
 ## Testing strategy
 
 Fixtures are generated (`scripts/regen_fixtures.py`), never hand-written,
-so every pinned hash is real. 339 tests; `python3 -m pytest -q`; plus
+so every pinned hash is real. 340 tests; `python3 -m pytest -q`; plus
 `python3 scripts/selftest.py`, the stdlib-only fresh-clone acceptance (D30).

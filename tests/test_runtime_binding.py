@@ -286,3 +286,19 @@ def test_followups_command_respects_the_boundaries():
                      'followup:$ARGUMENTS', "explicit human",
                      "already_created", "Never create GitHub/Jira"):
         assert required in text, required
+
+
+def test_bootstrap_skill_installs_the_real_thing():
+    """skills.sh distribution (D33): the CLI copies skill directories and
+    nothing else, so the published skill must bootstrap the full install
+    rather than pretend to be it. It stays thin, points at the canonical
+    repo and install.sh, and forbids improvised installs."""
+    skill = (ROOT / "skills" / "reins" / "SKILL.md").read_text()
+    assert "github.com/hashirventhodi/reins" in skill
+    assert "install.sh" in skill and "selftest.py" in skill
+    assert "no pip, no PATH edits" in skill
+    assert len(skill.splitlines()) <= 40   # a bootstrap, not a manual
+    # and it is the ONLY skill in a location the skills CLI scans —
+    # the contract skills are runtime-internal and broken without the
+    # full install, so they must stay out of scanned paths.
+    assert [p.name for p in (ROOT / "skills").iterdir()] == ["reins"]

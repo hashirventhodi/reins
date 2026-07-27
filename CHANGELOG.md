@@ -2,6 +2,9 @@
 
 ## 2.0.0 — reins
 
+- Public release; installable via skills.sh (D33): `npx skills add
+  hashirventhodi/reins -g` ships the `/reins` bootstrap skill, which
+  clones the repo and runs install.sh + selftest.
 - The project is named **reins** (D32); repo
   `hashirventhodi/reins`, env override `$REINS_HOME`. Briefly named
   contract-runtime during the port.

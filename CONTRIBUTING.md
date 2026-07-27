@@ -29,7 +29,7 @@ Thanks for your interest. Two ground rules shape everything here:
 
 ```console
 pip install pytest
-python -m pytest -q          # 339 tests, ~10s; must stay green
+python -m pytest -q          # 340 tests, ~10s; must stay green
 python scripts/selftest.py   # stdlib-only deployment acceptance (D30)
 python scripts/regen_fixtures.py   # after intentional fixture changes
 ```

@@ -752,3 +752,30 @@ so it isn't re-litigated without new grounding."
 - **Why not architectural:** nothing executes differently; one env-var
   spelling and display strings changed. Recorded so the name, and the
   names rejected, are not re-litigated.
+
+## D33 — skills.sh distribution is a bootstrap, not the install (Tier 0)
+
+- **Problem:** the repo went public and should be installable through the
+  skills.sh registry (`npx skills add hashirventhodi/reins`). But the
+  skills CLI copies `skills/<name>/SKILL.md` directories and nothing
+  else — no commands, no agents, no hooks, no symlinks — while Reins is
+  a core invoked by path, twelve commands, a reviewer agent, and
+  canonical contract texts. Publishing the contract skills through it
+  would install five skills that reference contracts and a core that are
+  not there: a plausible-looking install that fails on first use.
+- **Why:** the alternative — vendoring the core and contracts into every
+  published skill — was pre-rejected when D30 was designed: per-skill
+  copies drift, and drift is fatal when bit-exactness is the design's
+  justification. One skill that performs the real install keeps the
+  single-source layout (D9) and gives registry users a one-command path.
+- **Smallest change:** `skills/reins/SKILL.md` — the only skill in a
+  location the skills CLI scans (`runtime/claude/skills/` is not one, so
+  the contract skills stay unpublishable by construction, enforced by
+  `test_bootstrap_skill_installs_the_real_thing`). Invoking `/reins`
+  clones/updates `~/Code/tools/reins`, runs `install.sh`, runs
+  `scripts/selftest.py`, and reports — all idempotent, and explicitly
+  forbidden from improvising (no pip, no PATH edits, no hand-copying).
+- **Why not architectural:** distribution only; zero product bytes and
+  zero runtime behavior changed. The install itself is still install.sh,
+  single-sourced — the registry entry is a doorway to it, not a second
+  implementation.

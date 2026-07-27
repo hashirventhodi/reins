@@ -26,7 +26,7 @@ Every agent session inherits these; they outrank session-level judgment:
   the system sees; the friction log captures what it cannot.
 
 ## Commands that aren't obvious
-- `python3 -m pytest -q` — 339 tests; must stay green.
+- `python3 -m pytest -q` — 340 tests; must stay green.
 - `python3 scripts/selftest.py` — stdlib-only fresh-clone acceptance (D30);
   must pass under the oldest supported interpreter (3.9).
 - `python3 scripts/regen_fixtures.py` — after intentional fixture changes.

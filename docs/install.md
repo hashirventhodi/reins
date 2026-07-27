@@ -3,6 +3,10 @@
 Requirements: Python ≥ 3.9, git. Zero dependencies — nothing is
 pip-installed, nothing lands on PATH (D30).
 
+Shortcut via [skills.sh](https://skills.sh):
+`npx skills add hashirventhodi/reins -g`, then invoke `/reins` in your
+agent — it runs the steps below for you (D33). Manual path:
+
     git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
     cd ~/Code/tools/reins
     ./install.sh                  # idempotent; honors $CLAUDE_HOME
@@ -29,7 +33,7 @@ should print a task id.
 Verify the API layer (optional):
 
     python3 ~/.claude/pipeline/core/pipeline_cli.py --help
-    python3 -m pytest -q          # 339 tests, ~10s (dev; needs pytest)
+    python3 -m pytest -q          # 340 tests, ~10s (dev; needs pytest)
 
 Uninstall (complete): remove the symlinks above and the clone. Nothing
 else is written anywhere on the machine.

@@ -5,7 +5,7 @@
 **A deterministic workflow engine for AI coding agents.**
 **Your AI writes the code. Reins governs the process — typed contracts, human approval gates, reproducible telemetry.**
 
-[![tests](https://img.shields.io/badge/tests-339%20passing-brightgreen)](tests/)
+[![tests](https://img.shields.io/badge/tests-340%20passing-brightgreen)](tests/)
 [![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
 [![deps](https://img.shields.io/badge/dependencies-none%20(stdlib%20only)-lightgrey)](pyproject.toml)
 [![status](https://img.shields.io/badge/v2.0.0-stable-8A2BE2)](docs/governance.md)
@@ -98,6 +98,10 @@ $ git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
 $ cd ~/Code/tools/reins && ./install.sh
 $ python3 scripts/selftest.py     # prove determinism on this machine
 ```
+
+Or via [skills.sh](https://skills.sh): `npx skills add hashirventhodi/reins -g`
+installs the `/reins` bootstrap skill — invoke `/reins` once and it
+performs the three steps above for you (D33).
 
 In any repository, set it up once:
 
