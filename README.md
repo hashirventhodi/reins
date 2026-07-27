@@ -82,32 +82,42 @@ the reviewer tests.
   JSON record answering the questions each contract pre-registered to
   justify its own existence — including which lane it ran and whether the
   floor was overridden — and [ten jq queries](docs/queries.md) run the trial.
-- 🔌 **Agent-agnostic by construction.** The core is contracts + a deterministic CLI.
-  Claude Code binding included; any runtime that can shell out can drive it.
-  CI enforces that the product never references any runtime.
+- 🔌 **Agent-agnostic by construction.** The core is contracts + a
+  deterministic Python package invoked by path — no install, no PATH, no
+  dependencies, so it behaves identically in Claude Code, Codex, CI, or a
+  bare shell. Claude Code binding included; any runtime that can shell out
+  can drive it. CI enforces that the product never references any runtime.
+- 📦 **Installs as one skill, carries everything.** `npx skills add
+  hashirventhodi/reins` delivers the core, the contract texts, the runtime
+  and the executable fixtures in a single copy — then `/reins` wires it in
+  and proves determinism on your machine with a stdlib-only selftest.
 
 ## Quick start
 
-Requires Python ≥ 3.9 and git. Zero dependencies — nothing is
-pip-installed and nothing lands on PATH; the deterministic core is
-invoked by path, so it works identically inside Claude Code, Codex, CI,
-or any shell (D30).
+Requires Python ≥ 3.9 and git. **Zero dependencies** — nothing is
+pip-installed and nothing lands on PATH.
 
-```console
-$ git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
-$ cd ~/Code/tools/reins && ./install.sh
-$ python3 scripts/selftest.py     # prove determinism on this machine
-```
-
-Or in one command via [skills.sh](https://skills.sh) — this installs
-the *whole* system, not a stub (D34):
+Install via [skills.sh](https://skills.sh) — the repository *is* the
+skill, so this one command carries the whole system, not a stub (D34):
 
 ```console
 $ npx skills add hashirventhodi/reins -g
 ```
 
-Then invoke `/reins` in your agent once; it wires the commands and
-reviewer agent in and runs the selftest.
+Then invoke `/reins` in your agent once. It wires the `/pipeline-*`
+commands, the contract skills and the reviewer agent into `~/.claude`,
+and runs a stdlib-only selftest that proves the core derives
+deterministically on your machine.
+
+<details>
+<summary>Prefer a git checkout? Same result, three commands.</summary>
+
+```console
+$ git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
+$ cd ~/Code/tools/reins && ./install.sh
+$ python3 scripts/selftest.py
+```
+</details>
 
 In any repository, set it up once:
 
@@ -167,12 +177,15 @@ appends one reproducible record to `telemetry.jsonl`:
 }
 ```
 
-Under the slash commands sits a deterministic CLI — the API the runtime
-drives, and the reason none of this depends on any particular agent. A
-human can run every transition by hand with it (that's not a fallback;
-it's the model-independence proof, enforced by an end-to-end test where a
-shell script plays the agent). Runtime authors and advanced users: see the
-**[CLI reference](docs/cli.md)**.
+Under the slash commands sits the deterministic core — the API the
+runtime drives, and the reason none of this depends on any particular
+agent. It is a stdlib-only Python package invoked by path
+(`python3 ~/.claude/pipeline/core/pipeline_cli.py …`), never installed,
+so there is no version of it to get wrong. A human can run every
+transition by hand (that's not a fallback; it's the model-independence
+proof, enforced by an end-to-end test where a shell script plays the
+agent). Runtime authors and advanced users: see the
+**[command reference](docs/cli.md)**.
 
 ## Design principles
 
@@ -180,7 +193,7 @@ shell script plays the agent). Runtime authors and advanced users: see the
    contract texts in [`contracts/`](contracts/) are the spec, and code is
    parity-tested against them.
 2. **The runtime orchestrates, never decides.** All logic lives in the
-   deterministic core; the agent binding is thin prompts over a CLI — and a
+   deterministic core; the agent binding is thin prompts over it — and a
    CI test fails if the product ever references a runtime.
 3. **Store decisions, derive status.** The only stored state is an
    append-only log of human decisions. Everything else is computed, which is
@@ -196,21 +209,23 @@ shell script plays the agent). Runtime authors and advanced users: see the
 
 | Guide | What it covers |
 |---|---|
-| [Installation](docs/install.md) | Fresh-machine setup (four commands) |
+| [Installation](docs/install.md) | Fresh-machine setup — one command via skills.sh, or a git checkout |
 | [Migration](docs/migration.md) | Adopt in an existing repo; byte-identical rollback |
 | [State machine](docs/state-machine.md) | The 16 statuses, lanes, normative precedence, clearing rules |
 | [Architecture](docs/architecture.md) | Modules, invariants, the product/runtime boundary |
-| [CLI reference](docs/cli.md) | The deterministic API under the slash commands — for runtime authors, CI, and no-AI use |
+| [Command reference](docs/cli.md) | The deterministic API under the slash commands — for runtime authors, CI, and no-AI use |
 | [The contracts](contracts/) | Canonical texts — Intent, Findings, Planning, Execution, Review |
 | [Quarterly review](docs/queries.md) | The five queries that put the process itself on trial |
-| [Implementation decisions](docs/implementation-decisions.md) | D10–D13, the honest record |
+| [Implementation decisions](docs/implementation-decisions.md) | D10–D34, the honest record — including the ones that were later corrected |
 
 ## Contributing
 
-The core is deliberately small and frozen; the most valuable contributions
+The core is deliberately small and changes only through the
+[governance ladder](docs/governance.md); the most valuable contributions
 right now are **runtime bindings** (Cursor, OpenCode, Codex CLI — the
-[orchestration loop is normative](docs/state-machine.md)) and **telemetry
-from real usage**. See [CONTRIBUTING.md](CONTRIBUTING.md).
+[orchestration loop is normative](docs/state-machine.md), and
+`$REINS_HOME` points any runtime at a checkout) and **telemetry from real
+usage**. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

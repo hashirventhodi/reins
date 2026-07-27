@@ -18,7 +18,8 @@ The contracts already force follow-up material into four places:
 - `ledger.md` entries whose `plan_impact` defers work
 
 What v1 adds is the **harvest step**. Harvesting is derivation, so it
-lives in the product (D14): `pipeline followups <id> --json` is a pure,
+lives in the product (D14): `pipeline followups <id> --json` (shorthand
+for `python3 ~/.claude/pipeline/core/pipeline_cli.py followups …`) is a pure,
 deterministic projection — chain order (intent, findings, ledger,
 review; document order within each), mechanical extraction rules
 (/defer/i non-goals; every out-of-scope observation; ledger entries with

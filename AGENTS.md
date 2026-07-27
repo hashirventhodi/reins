@@ -1,9 +1,14 @@
-# Contract Pipeline — Agent Instructions
+# Reins — Agent Instructions
 
 ## What this is
 The deterministic workflow engine governing AI-assisted development:
 typed contracts, three approval gates, reproducible telemetry. You are
 likely operating inside the workflow this repository implements.
+
+The repository is also its own distributable: a root `SKILL.md` makes it
+one skills.sh skill, so `npx skills add hashirventhodi/reins` copies the
+whole tree and `/reins` wires it in (D34). Nothing here is vendored —
+keep it that way.
 
 ## Operational Constitution
 Every agent session inherits these; they outrank session-level judgment:
@@ -12,13 +17,14 @@ Every agent session inherits these; they outrank session-level judgment:
   architectural reinvention.
 - Deterministic derivation belongs in the product (pipeline/);
   orchestration belongs in the runtime (runtime/). The runtime never
-  derives product state — it calls `pipeline` for facts.
+  derives product state — it calls the core for facts.
 - Human approval is explicit; never record consent without an explicit
   human reply in-session.
 - Respect existing decision records before introducing new principles:
   docs/implementation-decisions.md is case law (D9 ownership, D12/D14
   actor-determines-layer, D15 diff currency, D16 reference identities,
-  D18 the floor is computed not judged, D21 lanes parameterise, never fork).
+  D18 the floor is computed not judged, D21 lanes parameterise never fork,
+  D30 the core travels with its invoker, D34 the repo is the skill).
 - An agent may *propose* how much process a task deserves. It may never
   record that choice: the floor is computed, the lane is the human's, and
   an override is loud, reasoned, and counted (D18/D20/D22).
@@ -61,7 +67,12 @@ Every agent session inherits these; they outrank session-level judgment:
 - Write the artifact body first, then `pipeline frontmatter … --init` to
   create the fence and pin (D28). Never hand-write a fence or a hash.
 - The test-count badge and docs counts are static; sync them when the
-  suite grows.
+  suite grows: README badge, AGENTS.md, docs/architecture.md,
+  docs/install.md, CONTRIBUTING.md.
+- Nothing may be added under a path the skills CLI scans (`skills/`,
+  `.claude/skills/`, `.agents/skills/`): a second scanned SKILL.md would
+  publish the contract skills as independently installable, which they
+  are not (D34, pinned by test_repo_root_is_the_distributable_skill).
 
 ## Do not touch
 - `request.md` files and `telemetry.jsonl` are immutable/append-only

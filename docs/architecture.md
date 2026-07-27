@@ -7,7 +7,7 @@ links to instead of embedding.
 
 The product is `pipeline/` + `contracts/` + `tests/`. Everything under
 `runtime/` is a consumer. Dependency direction is one-way — runtime files
-reference contract texts and shell out to the CLI; nothing in the product
+reference contract texts and shell out to the core; nothing in the product
 may reference a runtime. Enforced by `test_product_never_references_runtime`
 and the M5 dependency audit (product imports are stdlib only, D30).
 
@@ -18,6 +18,11 @@ slash commands):
 1. the deterministic core (`pipeline_cli.py`, invoked by path — D30)
    — see docs/cli.md
 2. the canonical contract texts (`contracts/*.md`)
+
+Both travel together: a root `SKILL.md` makes the repository itself the
+distributable unit, so a skills.sh install copies the core, the contracts,
+the runtime and the fixtures in one piece (D34). There is exactly one copy
+of the core in the repository — nothing is vendored, so nothing can drift.
 
 ## The artifact chain (detailed)
 
@@ -49,6 +54,13 @@ staleness propagates transitively.
 - `pipeline/artifact.py` — parse/serialize/hash. Bodies round-trip
   byte-identically; hashing is over exact file bytes; fence-aware section
   splitting; typed all-or-nothing parse errors.
+- `pipeline/miniyaml.py` — the restricted YAML subset the artifacts
+  actually use, replacing PyYAML so the product has zero dependencies
+  (D30). Parses block/flow mappings and sequences, quoted and plain
+  scalars, comments and folded continuation lines; anything outside the
+  subset raises typed with a line number. Timestamps and floats stay
+  plain strings — the deliberate divergence that retires the D26 bug
+  class at the parser.
 - `pipeline/validate.py` — the type system. 24 rules with stable IDs,
   exhaustive passing+failing fixture coverage (meta-tested), transitive
   staleness, purity (byte-snapshot tested).
@@ -69,9 +81,18 @@ staleness propagates transitively.
   wall-clock values and are golden-tested byte-for-byte.
 - `pipeline/cli.py` — thin wrapper. Exit codes: 0 ok / 1 usage /
   2 invalid / 3 needs-human.
+- `pipeline_cli.py` (repo root) — the sole entry point. Self-locating via
+  `realpath(__file__)` and asserting the Python ≥ 3.9 floor before any
+  import, so it runs from any cwd with no install, no PATH and no
+  PYTHONPATH (D30).
 - `runtime/claude/` — the Claude Code binding: 5 contract skill shims,
-  9 commands (`/pipeline-work` implements the normative orchestration loop), the
-  read-only reviewer agent, 3 hooks, `settings.example.json`, `install.sh`.
+  12 `/pipeline-*` commands (`/pipeline-work` implements the normative
+  orchestration loop — the namespace is claimed deliberately, D31), the
+  read-only reviewer agent, 3 hooks, `settings.example.json`.
+- `install.sh` (repo root) — the only supported install: symlinks the
+  commands, skills, agent, contracts and the core itself into
+  `$CLAUDE_HOME`. `$REINS_HOME` points hooks and non-Claude runtimes at
+  any checkout.
 
 ## Invariants (all executable as tests)
 
@@ -99,5 +120,12 @@ staleness propagates transitively.
 ## Testing strategy
 
 Fixtures are generated (`scripts/regen_fixtures.py`), never hand-written,
-so every pinned hash is real. 340 tests; `python3 -m pytest -q`; plus
-`python3 scripts/selftest.py`, the stdlib-only fresh-clone acceptance (D30).
+so every pinned hash is real. Two acceptances, deliberately different:
+
+- `python3 -m pytest -q` — 340 tests, the *development* acceptance.
+- `python3 scripts/selftest.py` — the *deployment* acceptance (D30):
+  stdlib only, no pytest, self-locating, and runnable on any fresh
+  install. It re-derives every fixture pin from first principles and
+  byte-compares frontier, floor and telemetry output against frozen
+  goldens, twice, to prove determinism on the machine in front of you.
+  CI runs it on Python 3.9 through 3.14.

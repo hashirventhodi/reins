@@ -23,8 +23,8 @@ step 2 is created or modified; rollback is deletion.
 5. In-flight work: finish current branches old-style; new tasks enter
    via `/pipeline-task add`. No artifact back-fill, ever.
 6. First task — conversational, in Claude Code: `/pipeline-task add <what you
-   want>` then `/pipeline-work <id>`. (The `pipeline` CLI underneath is the API
-   for runtime authors and no-AI use: docs/cli.md.)
+   want>` then `/pipeline-work <id>`. (The deterministic core underneath is
+   the API for runtime authors and no-AI use: docs/cli.md.)
 
 ## Rollback (complete, no residue)
 

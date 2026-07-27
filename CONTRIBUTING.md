@@ -16,8 +16,11 @@ Thanks for your interest. Two ground rules shape everything here:
 
 - **Runtime bindings** for other agents (Cursor, OpenCode, Codex CLI…).
   Implement the normative loop in docs/state-machine.md against the two
-  public interfaces (CLI + contract texts). Add a `runtime/<name>/` dir;
-  never import product internals as a library.
+  public interfaces (the core's subcommands + contract texts). Add a
+  `runtime/<name>/` dir; never import product internals as a library.
+  Point `$REINS_HOME` at a checkout and invoke
+  `python3 "$REINS_HOME/pipeline_cli.py" <cmd>` — no install step exists
+  to depend on (D30).
 - **Telemetry from real usage** — anonymized `telemetry.jsonl` excerpts
   with observations, especially where a contract looks vestigial or
   hollow.

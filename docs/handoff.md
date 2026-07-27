@@ -5,6 +5,14 @@ operational phase. It is the charter future contributors and agent
 sessions inherit; nothing essential about how to evolve this system
 lives outside the repository.
 
+> **Snapshot, not current state.** The figures below were true when the
+> architecture phase closed and are left as written — this document is a
+> charter, and rewriting its numbers would erase what was actually
+> handed over. For current state see README.md and
+> docs/implementation-decisions.md; the operational phase has since
+> produced D14–D34, including the repackaging that removed the installed
+> CLI (D30) and named the project Reins (D32).
+
 ## Final state (at handoff)
 
 - 199 passing tests; every documented guarantee is test-backed

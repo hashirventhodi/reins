@@ -14,9 +14,9 @@
   `/pipeline-task`, `/pipeline-status`, … (D31). The unprefixed names
   collided with other skill suites in `~/.claude/commands`; install.sh
   now also removes stale unprefixed links on upgrade.
-- Repackaged as **contract-runtime** (D30): the deterministic core is
-  invoked by path (`python3 ~/.claude/pipeline/core/pipeline_cli.py`),
-  never installed. The `bin/` PATH shim is retired; `install.sh` adds the
+- Repackaged so the core travels with its invoker (D30): it is invoked
+  by path (`python3 ~/.claude/pipeline/core/pipeline_cli.py`), never
+  installed. The `bin/` PATH shim is retired; `install.sh` adds the
   `~/.claude/pipeline/core` symlink.
 - Zero dependencies: PyYAML replaced by the in-repo restricted-subset
   parser/dumper `pipeline/miniyaml.py`. Timestamps are now plain strings
@@ -28,18 +28,18 @@
   without one and never falls back to `main` (runtime-only change).
 - D28 (`frontmatter --init`, decorated-tag tolerance) and D29 (exit-3 is
   a status) landed with their tests and docs.
-- History note: ported from `contract-pipeline` v1.0.0; its git history
-  remains in that repository.
-
-## Unreleased
-
 - Governance: policy evolved from "frozen: changes require telemetry" to
   "stable, not immutable" with a three-tier change ladder
   (docs/governance.md). The v1.0.0 entry below preserves the policy as
   written at tag time.
-- Runtime: /followups — review-driven task intake via the
-  `followup:<parent>` source-ref convention (Tier 0; zero product
-  changes).
+- Runtime: `/pipeline-followups` (then `/followups`) — review-driven task
+  intake via the `followup:<parent>` source-ref convention (Tier 0; zero
+  product changes).
+- Adaptive workflow: the express lane, the computed floor and lane
+  disposition (D18–D25); nothing merges unverified (D19).
+- History note: ported from `contract-pipeline` v1.0.0; that repository
+  keeps the pre-port git history. Entries below are preserved as
+  written — the commands they name were unprefixed at the time (D31).
 
 ## v1.0.0 — Contract Pipeline (2026-07-25) — FROZEN
 

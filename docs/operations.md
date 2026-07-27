@@ -3,6 +3,10 @@
 Daily-usage answers that are true by construction; nothing here is a
 workaround for a bug.
 
+Command shorthand: `pipeline <cmd>` below abbreviates the real
+invocation, `python3 ~/.claude/pipeline/core/pipeline_cli.py <cmd>`
+(docs/cli.md). There is no binary of that name on PATH.
+
 ## Undoing a lane
 The express lane is not a trapdoor: recording a `full` disposition makes
 the chain walk require the full chain again, and the task resumes at the
