@@ -701,3 +701,29 @@ so it isn't re-litigated without new grounding."
   interface changed, and D18's guarantee is strengthened in passing: the
   floor function now runs from a checkout the agent can inspect but not
   provision, with zero third-party surface underneath it.
+
+## D31 — runtime commands claim a namespace: `/pipeline-*` (Tier 0, runtime only)
+
+- **Problem:** the Claude Code binding installed its commands as `/work`,
+  `/plan`, `/review`, `/task`, `/status`, `/verify` — six of the most
+  generic verbs in any agent setup. On a machine that also installs other
+  skill suites (observed live: gstack's `/plan`, `/review`, `/ship`
+  family), whichever install ran last owned the name, and the loser failed
+  silently: a user typing `/review` could get a generic PR review where
+  the pipeline's adjudicated Review Contract was required, with nothing
+  recording that the wrong tool ran.
+- **Why:** the collision is structural, not accidental — a shared global
+  namespace (`~/.claude/commands`) and deliberately ordinary names. The
+  product cannot fix it (names are runtime property, D9); politeness
+  ("install this last") is not a mechanism. A prefix is: `/pipeline-work`
+  cannot be claimed by an unrelated suite by accident.
+- **Smallest change:** rename the twelve command files to
+  `pipeline-<name>.md` and update every cross-reference in the runtime,
+  docs, and binding tests. `install.sh` additionally removes stale
+  unprefixed links that point into this checkout (or a pre-rename
+  contract-pipeline one), so an upgrade leaves no shadowing residue.
+  Skills (`intent-contract`, …) and the reviewer agent already carried
+  distinctive names and are unchanged. Zero product bytes changed.
+- **Why not architectural:** the boundary is untouched — this is the
+  runtime renaming its own surface. Historical documents (this log,
+  CHANGELOG history) keep the old names; they were true when written.

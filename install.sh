@@ -15,6 +15,18 @@ done
 for cmd in "$SRC"/runtime/claude/commands/*.md; do
   ln -sf "$cmd" "$DEST/commands/$(basename "$cmd")"
 done
+# D31: commands are /pipeline-* now; drop stale unprefixed links that
+# point into this checkout (or dangle from a pre-rename install).
+for name in work task status dispose verify review followups refine \
+            research plan implement validate; do
+  link="$DEST/commands/$name.md"
+  if [ -L "$link" ]; then
+    target="$(readlink "$link")"
+    case "$target" in
+      "$SRC"/*|*/contract-pipeline/*) rm -f "$link" ;;
+    esac
+  fi
+done
 ln -sf "$SRC/runtime/claude/agents/reviewer.md" "$DEST/agents/reviewer.md"
 ln -sfn "$SRC/contracts" "$DEST/pipeline/contracts"
 ln -sfn "$SRC" "$DEST/pipeline/core"

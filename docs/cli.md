@@ -2,7 +2,7 @@
 
 The core is the API layer under the slash commands: the stable interface
 runtime bindings, CI jobs, and hooks are built against. Day-to-day
-development doesn't touch it — `/task`, `/work`, and `/status` are the
+development doesn't touch it — `/pipeline-task`, `/pipeline-work`, and `/pipeline-status` are the
 user workflow — but it is a supported public surface with compatibility
 guarantees, because model-independence depends on it.
 

@@ -70,7 +70,7 @@ staleness propagates transitively.
 - `pipeline/cli.py` — thin wrapper. Exit codes: 0 ok / 1 usage /
   2 invalid / 3 needs-human.
 - `runtime/claude/` — the Claude Code binding: 5 contract skill shims,
-  9 commands (`/work` implements the normative orchestration loop), the
+  9 commands (`/pipeline-work` implements the normative orchestration loop), the
   read-only reviewer agent, 3 hooks, `settings.example.json`, `install.sh`.
 
 ## Invariants (all executable as tests)

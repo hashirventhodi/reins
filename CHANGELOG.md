@@ -2,6 +2,10 @@
 
 ## 2.0.0 — contract-runtime
 
+- Runtime commands renamed to a claimed namespace: `/pipeline-work`,
+  `/pipeline-task`, `/pipeline-status`, … (D31). The unprefixed names
+  collided with other skill suites in `~/.claude/commands`; install.sh
+  now also removes stale unprefixed links on upgrade.
 - Repackaged as **contract-runtime** (D30): the deterministic core is
   invoked by path (`python3 ~/.claude/pipeline/core/pipeline_cli.py`),
   never installed. The `bin/` PATH shim is retired; `install.sh` adds the

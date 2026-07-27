@@ -26,7 +26,7 @@ plan_impact != none; should-fix/nit review findings), exact-normalized
 dedup (first occurrence wins, origins accumulate; deliberately no fuzzy
 matching), word-boundary titles (<=72 chars), verbatim bodies plus a
 fixed origin line, and `already_created` detection so re-runs never
-re-offer what exists. `/followups <task-id>` presents that list and
+re-offer what exists. `/pipeline-followups <task-id>` presents that list and
 relays the human's explicit selection by invoking `pipeline task add`
 once per selected candidate — title/body extracted from the JSON
 mechanically (jq/python, never retyped; `creation_body()` is the

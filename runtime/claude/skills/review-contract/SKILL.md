@@ -1,6 +1,6 @@
 ---
 name: review-contract
-description: Adjudicate the diff against plan.md, ledger.md and intent.md from clean context, producing review.md. Only the reviewer agent should execute this. Use when the /work orchestrator or /review invokes the Review Contract.
+description: Adjudicate the diff against plan.md, ledger.md and intent.md from clean context, producing review.md. Only the reviewer agent should execute this. Use when the /pipeline-work orchestrator or /pipeline-review invokes the Review Contract.
 ---
 Read and follow exactly: ~/.claude/pipeline/contracts/review.md
 Your only inputs are intent.md, plan.md, ledger.md and the git diff of the branch. Do not read any session context.

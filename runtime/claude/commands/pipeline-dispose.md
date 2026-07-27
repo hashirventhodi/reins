@@ -1,5 +1,5 @@
 ---
-description: Choose the lane for a task - compute the floor, propose, record the human's decision. Usage - /dispose <task-id>
+description: Choose the lane for a task - compute the floor, propose, record the human's decision. Usage - /pipeline-dispose <task-id>
 ---
 Task: $ARGUMENTS. The lane decides which artifacts the task needs; only a human
 may choose it, and never below the computed floor without a recorded reason.

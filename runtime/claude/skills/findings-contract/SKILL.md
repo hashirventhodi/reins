@@ -1,6 +1,6 @@
 ---
 name: findings-contract
-description: Produce findings.md from a confirmed intent.md by investigating the codebase. Use when the /work orchestrator or /research invokes the Findings Contract for a pipeline task.
+description: Produce findings.md from a confirmed intent.md by investigating the codebase. Use when the /pipeline-work orchestrator or /pipeline-research invokes the Findings Contract for a pipeline task.
 ---
 Read and follow exactly: ~/.claude/pipeline/contracts/findings.md
 Write .dev/tasks/<task>/findings.md, then set frontmatter only via:

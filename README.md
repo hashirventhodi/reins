@@ -19,7 +19,7 @@ points for your approval. Everyday work takes the **express lane** — one
 stop, still reviewed and still verified — and which lane applies is computed
 from the change, not argued by the agent. Either way it leaves a reproducible
 evidence trail. Contract Runtime ships with a Claude Code runtime, so all of
-it is conversational: `/task add`, `/work`, done.
+it is conversational: `/pipeline-task add`, `/pipeline-work`, done.
 
 AI coding agents are great at writing code and terrible at accountability.
 They plan in their heads, drift from what you asked, review their own work,
@@ -71,7 +71,7 @@ the reviewer tests.
   upstream and everything downstream goes stale — transitively, automatically.
 - 🚦 **Three approval gates, zero babysitting.** Approval is pinned to the
   exact bytes you approved; editing an approved plan reopens the gate.
-  Between gates, `/work` runs the whole loop.
+  Between gates, `/pipeline-work` runs the whole loop.
 - 🛑 **Escalation is compliance, not failure.** Five triggers (invalidated
   assumption, unplanned dependency, repeated verification failure, scope
   blow-up, checkpoint) *halt* execution and route backward — by contract.
@@ -106,21 +106,21 @@ $ python3 ~/.claude/pipeline/core/pipeline_cli.py init
 ```
 
 The bundled **Claude Code runtime** is what provides the slash commands —
-`/task`, `/work`, `/status` — as thin bindings over the deterministic
+`/pipeline-task`, `/pipeline-work`, `/pipeline-status` — as thin bindings over the deterministic
 core. (Other agents can provide the same commands by implementing the
 [normative loop](docs/state-machine.md); Claude Code is simply the first
 runtime.) Then everything is conversational:
 
 ```text
-/task add Add a request id header to every API response
-/work T-2026-07-25-add-a-request-id-header
+/pipeline-task add Add a request id header to every API response
+/pipeline-work T-2026-07-25-add-a-request-id-header
 ```
 
-(`/task add` prints the task ID — use the one it gives you.)
+(`/pipeline-task add` prints the task ID — use the one it gives you.)
 
-`/work` runs contract to contract and stops only when it needs you: it
+`/pipeline-work` runs contract to contract and stops only when it needs you: it
 shows you the intent to confirm, the plan to approve, and reports when the
-task is ready to merge. Check in anytime with `/status <task-id>`.
+task is ready to merge. Check in anytime with `/pipeline-status <task-id>`.
 
 Full setup: **[docs/install.md](docs/install.md)** ·
 Existing repos (10 min, fully reversible): **[docs/migration.md](docs/migration.md)**
@@ -128,11 +128,11 @@ Existing repos (10 min, fully reversible): **[docs/migration.md](docs/migration.
 ## What a task looks like
 
 <!-- demo.gif: recorded with `vhs demo.tape` (see assets/demo.tape) once
-     you have a real /work run — do not fake this recording. Suggested
-     shots: /task add -> /work -> gate 2 approval -> review verdict ->
+     you have a real /pipeline-work run — do not fake this recording. Suggested
+     shots: /pipeline-task add -> /pipeline-work -> gate 2 approval -> review verdict ->
      telemetry line. -->
 
-`/work` pauses at gate 2 and shows you the plan:
+`/pipeline-work` pauses at gate 2 and shows you the plan:
 
 > **Plan ready for approval** (gate 2 of 3) — objective, three steps each with
 > a `verify:` line, risks, out of scope. *Approve, edit, or send it back?*
@@ -144,7 +144,7 @@ true`): gates that get edited are gates that are working.
 
 Mid-implementation, the agent discovers it needs a dependency the plan
 never named. It doesn't improvise — trigger **E2** fires, execution halts,
-and `/work` stops to ask you where to route it. After you merge the PR, CI
+and `/pipeline-work` stops to ask you where to route it. After you merge the PR, CI
 appends one reproducible record to `telemetry.jsonl`:
 
 ```json

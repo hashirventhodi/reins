@@ -22,8 +22,8 @@ PATH entry, no venv, no pip. Non-Claude runtimes (Codex, CI) point
 `$CONTRACT_RUNTIME` at any checkout and use the same entry point.
 
 Verify the runtime surface (in Claude Code, inside any repo after
-`python3 ~/.claude/pipeline/core/pipeline_cli.py init`): `/task`,
-`/work`, and `/status` should be available, and `/task add hello world`
+`python3 ~/.claude/pipeline/core/pipeline_cli.py init`): `/pipeline-task`,
+`/pipeline-work`, and `/pipeline-status` should be available, and `/pipeline-task add hello world`
 should print a task id.
 
 Verify the API layer (optional):

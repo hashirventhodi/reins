@@ -1,6 +1,6 @@
 ---
 name: execution-contract
-description: Execute an approved plan.md faithfully, producing the diff and ledger.md, honoring escalation triggers E1-E5 and prohibitions P1-P4. Use when the /work orchestrator or /implement invokes the Execution Contract.
+description: Execute an approved plan.md faithfully, producing the diff and ledger.md, honoring escalation triggers E1-E5 and prohibitions P1-P4. Use when the /pipeline-work orchestrator or /pipeline-implement invokes the Execution Contract.
 ---
 Read and follow exactly: ~/.claude/pipeline/contracts/execution.md
 On any escalation trigger STOP and run: python3 ~/.claude/pipeline/core/pipeline_cli.py decide escalation <task> --trigger E# --from execution --detail "...", then end your turn.

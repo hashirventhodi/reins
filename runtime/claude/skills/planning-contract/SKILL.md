@@ -1,6 +1,6 @@
 ---
 name: planning-contract
-description: Produce plan.md from confirmed intent.md and findings.md. Use when the /work orchestrator or /plan invokes the Planning Contract for a pipeline task.
+description: Produce plan.md from confirmed intent.md and findings.md. Use when the /pipeline-work orchestrator or /pipeline-plan invokes the Planning Contract for a pipeline task.
 ---
 Read and follow exactly: ~/.claude/pipeline/contracts/planning.md
 Write .dev/tasks/<task>/plan.md, then set frontmatter only via:

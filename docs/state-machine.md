@@ -96,7 +96,7 @@ Consequences worth stating:
   pin for *format* only, never for currency — deciding whether a tree id is
   still current needs git, which stays outside the product (D12). The
   runtime verifies it at gate 3 by mechanical comparison; commits after
-  review surface as a warning and a /review offer, not silent
+  review surface as a warning and a /pipeline-review offer, not silent
   AWAITING_MERGE.
 - **Verification (D19):** a task leaves UNVERIFIED when, for every verifier
   that has recorded against the **reviewed tree**, the latest record is
@@ -121,5 +121,5 @@ Consequences worth stating:
 decisions.jsonl bytes). Identical inputs produce byte-identical
 `to_json()` output regardless of directory location; the Frontier
 carries the task directory *name*, never a path, and no wall-clock time.
-This is what makes `/work` idempotent and resumable, and what future
+This is what makes `/pipeline-work` idempotent and resumable, and what future
 runtimes may rely on.

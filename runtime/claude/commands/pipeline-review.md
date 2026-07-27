@@ -1,5 +1,5 @@
 ---
-description: Escape hatch - run only the Review Contract via the reviewer agent. Usage - /review <task-id>
+description: Escape hatch - run only the Review Contract via the reviewer agent. Usage - /pipeline-review <task-id>
 ---
 Check `python3 ~/.claude/pipeline/core/pipeline_cli.py status $ARGUMENTS --json`; if next_contract is not 'review',
 warn (do not block). Then invoke the reviewer subagent for $ARGUMENTS, passing

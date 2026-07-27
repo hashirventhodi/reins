@@ -21,7 +21,7 @@ and keeps adjudication. Tasks bypassed before that change still resolve to
 BYPASSED and still extract with outcome `bypassed` — decisions are
 append-only history and the reader is kept for exactly that reason. There
 is no undo: a bypass pins the immutable request, so its hash always
-matches. Recovery is a new task with the same body (`/task add`, paste or
+matches. Recovery is a new task with the same body (`/pipeline-task add`, paste or
 re-fetch the request), which today runs express and gets reviewed.
 
 ## Abandoning a task
@@ -43,7 +43,7 @@ the chain must be repaired first and the frontier tells you so.
 
 ## Post-review commits (diff currency)
 See D15: the validator does not police the review's diff pin (git stays
-outside the product). /work verifies at gate 3 and offers /review on
+outside the product). /pipeline-work verifies at gate 3 and offers /pipeline-review on
 mismatch. If you merge anyway, that is a human decision the record
 preserves.
 

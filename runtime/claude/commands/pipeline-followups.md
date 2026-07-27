@@ -1,5 +1,5 @@
 ---
-description: Present deterministic follow-up candidates from a finished task; create the ones the human approves. Usage - /followups <task-id>
+description: Present deterministic follow-up candidates from a finished task; create the ones the human approves. Usage - /pipeline-followups <task-id>
 ---
 Run `python3 ~/.claude/pipeline/core/pipeline_cli.py status $ARGUMENTS --json` first; this is meant for
 AWAITING_MERGE or DONE (warn otherwise, do not block).

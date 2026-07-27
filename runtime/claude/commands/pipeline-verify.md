@@ -1,5 +1,5 @@
 ---
-description: Run a task's verifications and record each result. Usage - /verify <task-id>
+description: Run a task's verifications and record each result. Usage - /pipeline-verify <task-id>
 ---
 Task: $ARGUMENTS. Resolves UNVERIFIED, which is not a human stop. For each check
 the plan names — or, on the express lane, each check the request implies:

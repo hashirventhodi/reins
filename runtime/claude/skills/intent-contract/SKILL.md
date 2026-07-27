@@ -1,6 +1,6 @@
 ---
 name: intent-contract
-description: Produce intent.md from a task's immutable request.md. Use when the /work orchestrator or /refine invokes the Intent Contract for a pipeline task.
+description: Produce intent.md from a task's immutable request.md. Use when the /pipeline-work orchestrator or /pipeline-refine invokes the Intent Contract for a pipeline task.
 ---
 Read and follow exactly: ~/.claude/pipeline/contracts/intent.md
 Write the artifact to .dev/tasks/<task>/intent.md, then set frontmatter only via:

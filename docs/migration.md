@@ -21,9 +21,9 @@ step 2 is created or modified; rollback is deletion.
 
 4. AGENTS.md / CLAUDE.md are orthogonal to the pipeline and unchanged.
 5. In-flight work: finish current branches old-style; new tasks enter
-   via `/task add`. No artifact back-fill, ever.
-6. First task — conversational, in Claude Code: `/task add <what you
-   want>` then `/work <id>`. (The `pipeline` CLI underneath is the API
+   via `/pipeline-task add`. No artifact back-fill, ever.
+6. First task — conversational, in Claude Code: `/pipeline-task add <what you
+   want>` then `/pipeline-work <id>`. (The `pipeline` CLI underneath is the API
    for runtime authors and no-AI use: docs/cli.md.)
 
 ## Rollback (complete, no residue)
