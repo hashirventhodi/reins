@@ -1,4 +1,4 @@
-# Quarterly review — canned queries (blueprint §10)
+# Quarterly review — canned queries (the telemetry questions each contract pre-registers)
 
 One jq query per pre-registered kill criterion. Silence is data: if a
 query returns all-empty for a quarter, the entry gate is set too low or

@@ -26,15 +26,18 @@ Thanks for your interest. Two ground rules shape everything here:
   hollow.
 - **Validator rules** — must ship with a passing and a failing fixture
   (the meta-test `test_every_rule_id_is_covered` enforces this) and stay
-  mechanical (presence/tags/enums, never prose quality — see R6).
+  mechanical (presence/tags/enums, never prose quality: the validator
+  checks structure, never whether the writing is any good).
 
 ## Working on the code
 
 ```console
-pip install pytest
-python -m pytest -q          # 340 tests, ~10s; must stay green
-python scripts/selftest.py   # stdlib-only deployment acceptance (D30)
-python scripts/regen_fixtures.py   # after intentional fixture changes
+python3 -m pip install -e '.[dev]'   # pytest only; the product has no deps
+python3 -m pytest -q          # 340 tests, ~10s; must stay green
+python3 scripts/selftest.py   # stdlib-only deployment acceptance (D30)
+python3 scripts/regen_fixtures.py   # after intentional fixture changes
+python3 scripts/selftest.py --regen # ONLY after intentional fixture changes:
+                                    # refreezes scripts/goldens/; commit both
 ```
 
 Implementation decisions that operationalize underspecified behavior go in

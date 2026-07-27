@@ -1,11 +1,11 @@
 # Architecture
 
-Moved from the original README; this is the module-level truth the README
-links to instead of embedding.
+The module-level truth the README links to instead of embedding.
 
 ## Product / runtime boundary (D9)
 
-The product is `pipeline/` + `contracts/` + `tests/`. Everything under
+The product is `pipeline/` + `pipeline_cli.py` + `contracts/` +
+`scripts/` + `tests/`. Everything under
 `runtime/` is a consumer. Dependency direction is one-way — runtime files
 reference contract texts and shell out to the core; nothing in the product
 may reference a runtime. Enforced by `test_product_never_references_runtime`
@@ -64,7 +64,7 @@ staleness propagates transitively.
 - `pipeline/validate.py` — the type system. 24 rules with stable IDs,
   exhaustive passing+failing fixture coverage (meta-tested), transitive
   staleness, purity (byte-snapshot tested).
-  Entry point: `python -m pipeline.validate <task_dir>`.
+  Also runnable directly: `python3 -m pipeline.validate <task_dir>`.
 - `pipeline/decisions.py` — append-only log of the only stored state:
   consents (hash-pinned), bypass, escalations, routing, merge. Strict
   append, tolerant read.
@@ -91,7 +91,8 @@ staleness propagates transitively.
   read-only reviewer agent, 3 hooks, `settings.example.json`.
 - `install.sh` (repo root) — the only supported install: symlinks the
   commands, skills, agent, contracts and the core itself into
-  `$CLAUDE_HOME`. `$REINS_HOME` points hooks and non-Claude runtimes at
+  `$CLAUDE_HOME`, and removes stale unprefixed command links left by
+  pre-D31 installs. `$REINS_HOME` points hooks and non-Claude runtimes at
   any checkout.
 
 ## Invariants (all executable as tests)
@@ -114,8 +115,9 @@ staleness propagates transitively.
   overrides are counted (D18/D20).
 - The express lane substitutes rather than waives — provenance stays total,
   and adjudication, disclosure and verification are lane-independent (D21).
-- M5 acceptance runs install, migration, a full happy path through the
-  executable only, and a rollback asserting a byte-identical tree.
+- M5 acceptance runs install, migration, a full happy path driven only
+  through the entry point as a subprocess (no in-process imports), and a
+  rollback asserting a byte-identical tree.
 
 ## Testing strategy
 
@@ -128,4 +130,4 @@ so every pinned hash is real. Two acceptances, deliberately different:
   install. It re-derives every fixture pin from first principles and
   byte-compares frontier, floor and telemetry output against frozen
   goldens, twice, to prove determinism on the machine in front of you.
-  CI runs it on Python 3.9 through 3.14.
+  CI runs it on Python 3.9, 3.11, 3.13 and 3.14.

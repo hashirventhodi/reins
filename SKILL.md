@@ -11,9 +11,9 @@ Installing this skill delivered the whole system — the deterministic core
 specifications (`tests/fixtures/`). Nothing else is downloaded; there are
 no dependencies and nothing is pip-installed (D30).
 
-One wiring step remains, because a skills installer cannot register
-slash commands or subagents. Run it from this skill's own directory
-(the directory containing this file):
+Two steps remain, because a skills installer cannot register slash
+commands or subagents. Run both from this skill's own directory (the
+directory containing this file), then report:
 
 1. `sh <skill-dir>/install.sh` — symlinks into `$CLAUDE_HOME` (default
    `~/.claude`): the twelve `/pipeline-*` commands, the five contract
@@ -23,10 +23,11 @@ slash commands or subagents. Run it from this skill's own directory
 2. `python3 <skill-dir>/scripts/selftest.py` — proves the core derives
    deterministically here. Requires Python ≥ 3.9; every line must read
    `ok`.
-3. Report to the human: that the runtime is linked, that selftest
-   passed, and the workflow — `/pipeline-task add <title>` then
-   `/pipeline-work <id>`, with `python3
-   ~/.claude/pipeline/core/pipeline_cli.py init` once per repository.
+Then tell the human: the runtime is linked, selftest passed, and the
+workflow is `/pipeline-task add <title>` then `/pipeline-work <id>`,
+with `python3 ~/.claude/pipeline/core/pipeline_cli.py init` once per
+repository. In a non-Claude runtime, set `$REINS_HOME` to this
+directory and invoke `python3 "$REINS_HOME/pipeline_cli.py" <cmd>`.
 
 Both steps are idempotent; re-run them to repair or update an install.
 If either fails, STOP and show the exact command and its output. Never

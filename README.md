@@ -215,7 +215,7 @@ agent). Runtime authors and advanced users: see the
 | [Architecture](docs/architecture.md) | Modules, invariants, the product/runtime boundary |
 | [Command reference](docs/cli.md) | The deterministic API under the slash commands — for runtime authors, CI, and no-AI use |
 | [The contracts](contracts/) | Canonical texts — Intent, Findings, Planning, Execution, Review |
-| [Quarterly review](docs/queries.md) | The five queries that put the process itself on trial |
+| [Quarterly review](docs/queries.md) | The ten queries that put the process itself on trial |
 | [Implementation decisions](docs/implementation-decisions.md) | D10–D34, the honest record — including the ones that were later corrected |
 
 ## Contributing

@@ -3,9 +3,9 @@
 This document is normative for every runtime binding. Behavior is
 implemented in `pipeline/frontier.py` and enforced by
 `tests/test_frontier.py`; if this document and the code ever disagree,
-that is a bug of the same severity as schema/contract drift (R1).
+that is a bug of the same severity as schema/contract drift.
 
-## Statuses (15)
+## Statuses (16)
 
 | Status | Meaning | next_contract | Human needed |
 |---|---|---|---|
@@ -114,6 +114,27 @@ Consequences worth stating:
   a git object id is never re-hashed to imitate a content hash.
 - **Bypass:** valid iff its pinned request hash matches request.md
   (always true in practice: request.md is immutable).
+
+## Orchestrator (the normative loop)
+
+A runtime binding implements this loop; `runtime/claude/commands/pipeline-work.md`
+is the reference implementation.
+
+1. Ask the core for status — never derive it:
+   `python3 ~/.claude/pipeline/core/pipeline_cli.py status <task> --json`.
+   Exit 3 is a *status* (a human is needed), not a failure (D29).
+2. Dispatch on `status` / `next_contract`: run the named contract, then
+   `validate <task>`; on violations, quote them back to the same contract
+   for at most two correction rounds, then stop and report blocked.
+3. At a consent gate, record the artifact's hash, show it, and wait for an
+   explicit human reply — then `consent intent|plan <task> [--edited]`,
+   where `--edited` is set by re-hashing, never by asking.
+4. At AWAITING_MERGE, re-check diff currency (D15) and the realized floor
+   (`floor-check`, D20) before reporting the task mergeable.
+
+The agent never decides its own status, its own lane, or its own
+consent. Everything it needs is a subcommand away; everything it must
+not decide is a human reply or a computed function.
 
 ## Determinism guarantee
 

@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.0.0 — reins
+## 2.0.0 — Reins (2026-07-28)
 
 - Public release; one-command install via skills.sh (D33, corrected by
   D34): `npx skills add hashirventhodi/reins -g` copies the entire
@@ -37,9 +37,12 @@
   product changes).
 - Adaptive workflow: the express lane, the computed floor and lane
   disposition (D18–D25); nothing merges unverified (D19).
-- History note: ported from `contract-pipeline` v1.0.0; that repository
-  keeps the pre-port git history. Entries below are preserved as
-  written — the commands they name were unprefixed at the time (D31).
+- History note: the working tree was ported out of `contract-pipeline`
+  v1.0.0 into a fresh repository (which is why the pre-port git history
+  stays in `contract-pipeline`); that repository was then renamed
+  contract-runtime -> reins, so its GitHub URLs redirect here (D32).
+  Entries below are preserved as written — the commands they name were
+  unprefixed at the time (D31).
 
 ## v1.0.0 — Contract Pipeline (2026-07-25) — FROZEN
 

@@ -1,4 +1,4 @@
-# CLI Reference — the deterministic API
+# Command Reference — the deterministic API
 
 The core is the API layer under the slash commands: the stable interface
 runtime bindings, CI jobs, and hooks are built against. Day-to-day
@@ -10,17 +10,23 @@ The canonical invocation (D30) is by path, never via PATH:
 
     python3 ~/.claude/pipeline/core/pipeline_cli.py <command> ...
 
-Throughout this document `pipeline <command>` abbreviates that line.
+Throughout this document `pipeline <command>` abbreviates that line —
+there is no binary of that name, so the bullets below are signatures,
+not copy-pasteable commands.
 Hooks and non-Claude runtimes resolve the checkout through
 `$REINS_HOME` (falling back to `~/.claude/pipeline/core`); a
 development checkout can equivalently use `python3 -m pipeline.cli`
 from the repo root.
 
+Global flag: `--root PATH` (default `.`) points every command at another
+repository root.
+
 Audiences:
 - **Runtime authors** — implement the normative loop
   (docs/state-machine.md §orchestrator) by shelling out to these commands.
 - **CI** — merge-time telemetry (`decide merged` + `extract --append`);
-  see runtime/github/workflows/telemetry.yml.
+  see runtime/github/workflows/telemetry.yml. `scripts/selftest.py` is
+  the stdlib-only acceptance to run on a fresh checkout.
 - **Advanced / no-AI use** — every transition can be driven by hand; the
   M5 acceptance suite runs a full task through this surface alone.
 
@@ -31,7 +37,7 @@ Audiences:
 
 3 is a **status, not a failure**: a healthy task waiting at a consent gate
 exits 3 every time, by design, so a caller can branch on it. Chaining
-`pipeline status` with `&&` or running it under `set -e` will therefore break
+`status` with `&&` or running it under `set -e` will therefore break
 at exactly the moments a human is needed — branch on the code, or use `--json`
 (D29).
 
@@ -57,7 +63,10 @@ Policy
   — the minimum process a change deserves (D18). Facts are **supplied, not
   gathered**: git and repository inspection are the runtime's (D12), so the
   common invocation is
-  `git diff --name-only | pipeline floor <id> --lines-changed N`.
+
+      git diff --name-only \
+        | python3 ~/.claude/pipeline/core/pipeline_cli.py floor <id> --lines-changed N
+
   Policy lives in the `floor:` block of `.dev/config.yaml`
   (`governed_paths` globs, `max_files`, `max_lines`).
   **Fail-safe in one direction only:** no policy block, no supplied paths,

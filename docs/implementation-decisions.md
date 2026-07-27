@@ -1,7 +1,37 @@
 # Implementation Decisions (repo-local log)
 
-D1–D9 live in the implementation blueprint. Decisions made during the
-build continue the same numbering and format here.
+Decisions D10 onward were made during the build and live here in full.
+
+## Before this log: the blueprint decisions
+
+D1–D9 were recorded in the design blueprint that preceded the
+repository. That document is not part of this repo and is not public, so
+the numbering below would otherwise dangle for every reader. Six of the
+nine are load-bearing and cited throughout; this index states what each
+settled, sourced from those citations. It is a map, not the reasoning —
+where behavior matters, the code and its tests are authoritative.
+
+- **D3 — consent is hash-pinned.** A confirmed intent or approved plan is
+  bound to the exact bytes approved; editing one voids the consent and
+  reopens the gate (`frontier._valid_consent`).
+- **D5 — the review pins the branch tree.** review.md carries a
+  `git:<object id>` pin for the diff it adjudicated. (Its currency check
+  was later placed in the runtime — see D15.)
+- **D6 — request.md is immutable, telemetry.jsonl is append-only.**
+  Enforced by hooks, not by instruction.
+- **D7 — consent authenticity is procedural, not cryptographic.** The
+  system records that a human replied; it cannot prove who. Stated as a
+  trust boundary rather than hidden.
+- **D8 — the self-correction count is orchestrator-side.** The product
+  cannot observe an agent's retries, so the metric stays `None` rather
+  than being faked (see D13).
+- **D9 — the product/runtime ownership boundary.** Deterministic
+  derivation is the product's; acquiring text, running tools and
+  touching git are the runtime's. The most-cited decision in this log,
+  and the one D12/D14 generalized into "the actor determines the layer".
+
+D1, D2 and D4 are not referenced anywhere in this repository; nothing
+here depends on them.
 
 ## D10 — 15 explicit statuses instead of the blueprint's 13
 

@@ -35,6 +35,11 @@ Every agent session inherits these; they outrank session-level judgment:
 - `python3 -m pytest -q` — 340 tests; must stay green.
 - `python3 scripts/selftest.py` — stdlib-only fresh-clone acceptance (D30);
   must pass under the oldest supported interpreter (3.9).
+- `python3 scripts/selftest.py --regen` — ONLY after an intentional
+  fixture change: refreezes `scripts/goldens/`, which selftest
+  byte-compares against. Regenerating fixtures without this makes
+  selftest fail for a reason the failure text won't explain. Commit
+  goldens and fixtures together; never hand-edit a golden.
 - `python3 scripts/regen_fixtures.py` — after intentional fixture changes.
   Writes both executable specifications: `tests/fixtures/happy/` (full lane)
   and `tests/fixtures/express/`. Never hand-edit hashes; the diff pin is
@@ -68,7 +73,9 @@ Every agent session inherits these; they outrank session-level judgment:
   create the fence and pin (D28). Never hand-write a fence or a hash.
 - The test-count badge and docs counts are static; sync them when the
   suite grows: README badge, AGENTS.md, docs/architecture.md,
-  docs/install.md, CONTRIBUTING.md.
+  docs/install.md, CONTRIBUTING.md. docs/handoff.md is deliberately NOT
+  on that list — it is a dated snapshot of the architecture phase, not a
+  status page, and its figures stay as written.
 - Nothing may be added under a path the skills CLI scans (`skills/`,
   `.claude/skills/`, `.agents/skills/`): a second scanned SKILL.md would
   publish the contract skills as independently installable, which they

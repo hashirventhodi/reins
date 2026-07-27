@@ -51,7 +51,40 @@ outside the product). /pipeline-work verifies at gate 3 and offers /pipeline-rev
 mismatch. If you merge anyway, that is a human decision the record
 preserves.
 
-## Hooks and PATH
-Hooks prefer the `pipeline` binary on PATH and fall back to module
-invocation; the guard hook fails open outside a pipeline repo. If a
-hook seems inert, check `which pipeline`.
+## Hooks that seem inert
+Hooks resolve the core by path, never through PATH (D30): `$REINS_HOME`
+if set, else `~/.claude/pipeline/core`, falling back to `python3 -m
+pipeline.cli` in a development checkout. The guard hook additionally
+fails open outside a pipeline repo, by design.
+
+If a hook seems inert, check the link the hooks actually use — not
+`which pipeline`, which is expected to print nothing:
+
+    ls -l ~/.claude/pipeline/core        # must resolve to a checkout
+    echo "$REINS_HOME"                   # if set, it wins
+
+A dangling `core` link (checkout moved or deleted) is the usual cause;
+re-run `install.sh` from the checkout's new location to repair it.
+
+## The core refuses to start
+- `reins requires Python >= 3.9` — the entry point asserts the floor
+  before importing anything (D30). Invoke a newer `python3`; nothing
+  else is wrong.
+- A `line N:` YAML error from `miniyaml` means an artifact strayed
+  outside the supported subset (D30) — usually a hand-written fence with
+  a construct the pipeline never emits, such as a flow mapping or a
+  block scalar. Rewrite the value as a plain or quoted scalar; do not
+  reach for a YAML library.
+
+## Selftest fails after regenerating fixtures
+`scripts/regen_fixtures.py` rewrites the executable specifications, and
+`scripts/selftest.py` byte-compares derived output against the goldens
+in `scripts/goldens/`. If a fixture change is intentional and the suite
+is green, refreeze with `python3 scripts/selftest.py --regen` and commit
+the goldens alongside the fixtures. Never edit a golden by hand.
+
+## Commands are missing or the wrong ones run
+Commands are `/pipeline-*` (D31). If an unprefixed `/work` or `/review`
+still resolves, an install from before the rename left a stale link;
+re-running `install.sh` removes the ones pointing at a Reins checkout.
+Anything else answering to those names belongs to another tool.

@@ -17,7 +17,7 @@ The contracts already force follow-up material into four places:
   `approve-with-fixes`
 - `ledger.md` entries whose `plan_impact` defers work
 
-What v1 adds is the **harvest step**. Harvesting is derivation, so it
+What the shipped feature adds is the **harvest step**. Harvesting is derivation, so it
 lives in the product (D14): `pipeline followups <id> --json` (shorthand
 for `python3 ~/.claude/pipeline/core/pipeline_cli.py followups …`) is a pure,
 deterministic projection — chain order (intent, findings, ledger,
@@ -32,7 +32,7 @@ relays the human's explicit selection by invoking `pipeline task add`
 once per selected candidate — title/body extracted from the JSON
 mechanically (jq/python, never retyped; `creation_body()` is the
 normative byte spec), skipping `already_created` candidates, with the
-same-day slug collision in `task add` as the deterministic backstop. The pipeline never touches
+same-day slug collision in `task add` as the deterministic backstop. Reins never touches
 external trackers and remains unaware `followup:` means anything.
 
 ## The convention (normative for runtimes)
@@ -44,10 +44,10 @@ external trackers and remains unaware `followup:` means anything.
 
 Traceability is child-side and telemetry-native: `task_ref` already
 carries `source_ref` into every record, so lineage is a query (see
-docs/queries.md, query 6), not stored state. The decision enum is
-unchanged; the frontier is unchanged; PIPELINE_VERSION is unchanged.
+docs/queries.md, query 6), not stored state. Harvesting introduced no
+new decision types, no frontier change, and no PIPELINE_VERSION bump.
 
-## Deferred to v2, pending evidence
+## Deferred, pending evidence
 
 A structured `Follow-ups` section in `review.md` is a Tier-2 change
 (docs/governance.md): evaluated on merits, with the signal below
