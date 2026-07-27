@@ -2,6 +2,7 @@
 
 ## 2.0.0 — Reins (2026-07-28)
 
+- Licensed **MIT**.
 - Public release; one-command install via skills.sh (D33, corrected by
   D34): `npx skills add hashirventhodi/reins -g` copies the entire
   system — root SKILL.md makes the repo itself the skill payload — and

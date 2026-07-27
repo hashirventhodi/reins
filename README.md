@@ -8,7 +8,8 @@
 [![tests](https://img.shields.io/badge/tests-340%20passing-brightgreen)](tests/)
 [![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
 [![deps](https://img.shields.io/badge/dependencies-none%20(stdlib%20only)-lightgrey)](pyproject.toml)
-[![status](https://img.shields.io/badge/v2.0.0-stable-8A2BE2)](docs/governance.md)
+[![status](https://img.shields.io/badge/v2.0.0-stable-8A2BE2)](CHANGELOG.md)
+[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 </div>
 
@@ -229,5 +230,4 @@ usage**. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-TBD — tracked as the repository's first issue. Until a license is
-chosen, all rights reserved.
+[MIT](LICENSE) © 2026 Hashir V
