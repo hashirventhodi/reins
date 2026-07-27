@@ -727,3 +727,28 @@ so it isn't re-litigated without new grounding."
 - **Why not architectural:** the boundary is untouched — this is the
   runtime renaming its own surface. Historical documents (this log,
   CHANGELOG history) keep the old names; they were true when written.
+
+## D32 — the project is named reins (Tier 0, no behavior change)
+
+- **Problem:** the port (D30) shipped under the placeholder name
+  contract-runtime — accurate but generic, and one methodology-word away
+  from the contract-pipeline repo it superseded. Candidate names that
+  leaned on task-pipeline vocabulary (`dev`, `dev-skills`, `squad`)
+  were rejected for the same reason the D31 rename happened: `squad` is
+  already a live task-pipeline suite on the reference machine, and
+  generic names lose silently in shared namespaces.
+- **Why:** *reins* names the actual design: the agent does the running,
+  the human holds the reins, and the gates are rein-pulls. It is short,
+  collision-free in the observed environment, and describes governance
+  rather than tooling.
+- **Smallest change:** repo renamed to `hashirventhodi/reins` (GitHub
+  redirects the old URLs); local checkout at `~/Code/tools/reins`; the
+  hook/CI env override `$CONTRACT_RUNTIME` is now `$REINS_HOME` (D30's
+  text names the old variable — true when written, superseded here).
+  The canonical invocation path `~/.claude/pipeline/core/pipeline_cli.py`
+  and the `/pipeline-*` command namespace (D31) are deliberately
+  unchanged: they name the *pipeline* concept, not the project, and
+  renaming them would churn every binding for zero collision benefit.
+- **Why not architectural:** nothing executes differently; one env-var
+  spelling and display strings changed. Recorded so the name, and the
+  names rejected, are not re-litigated.

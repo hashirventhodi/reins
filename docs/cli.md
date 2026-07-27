@@ -12,7 +12,7 @@ The canonical invocation (D30) is by path, never via PATH:
 
 Throughout this document `pipeline <command>` abbreviates that line.
 Hooks and non-Claude runtimes resolve the checkout through
-`$CONTRACT_RUNTIME` (falling back to `~/.claude/pipeline/core`); a
+`$REINS_HOME` (falling back to `~/.claude/pipeline/core`); a
 development checkout can equivalently use `python3 -m pipeline.cli`
 from the repo root.
 

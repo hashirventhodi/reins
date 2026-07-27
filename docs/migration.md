@@ -10,8 +10,8 @@ step 2 is created or modified; rollback is deletion.
                                   # creates .dev/tasks/, .dev/config.yaml,
                                   # telemetry.jsonl (empty)
        mkdir -p .claude/hooks
-       cp ~/Code/tools/contract-runtime/runtime/claude/hooks/*.sh .claude/hooks/
-       cp ~/Code/tools/contract-runtime/runtime/claude/settings.example.json .claude/settings.json
+       cp ~/Code/tools/reins/runtime/claude/hooks/*.sh .claude/hooks/
+       cp ~/Code/tools/reins/runtime/claude/settings.example.json .claude/settings.json
        printf '.claude/settings.local.json\n' >> .gitignore
 
 3. Set the per-stack post-edit command (the ONLY per-repo tuning), e.g.

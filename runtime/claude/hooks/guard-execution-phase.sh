@@ -13,7 +13,7 @@ path = str(data.get("tool_input", {}).get("file_path", ""))
 if not path:
     sys.exit(0)
 try:
-    core = os.environ.get("CONTRACT_RUNTIME") or os.path.expanduser(
+    core = os.environ.get("REINS_HOME") or os.path.expanduser(
         "~/.claude/pipeline/core")
     entry = os.path.join(core, "pipeline_cli.py")
     cmd = ([sys.executable, entry, "task", "list", "--json"]

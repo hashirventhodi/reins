@@ -4,7 +4,7 @@
 # violations to Claude via stderr + exit 2. For source files, delegates to
 # the project's command if PIPELINE_POST_EDIT_CMD is set (per-stack; see
 # settings.example.json), else exits 0.
-# Invokes the core by path (D30): $CONTRACT_RUNTIME if set, else the
+# Invokes the core by path (D30): $REINS_HOME if set, else the
 # installed ~/.claude/pipeline/core symlink; falls back to module
 # invocation for development checkouts.
 INPUT=$(cat)
@@ -15,7 +15,7 @@ path = str(data.get("tool_input", {}).get("file_path", ""))
 m = re.search(r"(^|/)\.dev/tasks/([^/]+)/[^/]+\.md$", path)
 if m:
     task_id = m.group(2)
-    core = os.environ.get("CONTRACT_RUNTIME") or os.path.expanduser(
+    core = os.environ.get("REINS_HOME") or os.path.expanduser(
         "~/.claude/pipeline/core")
     entry = os.path.join(core, "pipeline_cli.py")
     cmd = ([sys.executable, entry, "validate", task_id]

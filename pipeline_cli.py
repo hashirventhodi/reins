@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Sole entry point for the contract-runtime deterministic core (D30).
+# Sole entry point for the reins deterministic core (D30, named in D32).
 #
 # Invoked by path, never installed:
 #
@@ -18,7 +18,7 @@ import sys
 
 if sys.version_info < (3, 9):
     sys.stderr.write(
-        "contract-runtime requires Python >= 3.9 (this interpreter is %s).\n"
+        "reins requires Python >= 3.9 (this interpreter is %s).\n"
         "Invoke with a newer python3, e.g.: python3.9 %s ...\n"
         % (sys.version.split()[0], os.path.basename(__file__)))
     sys.exit(1)  # exit 1 = usage error, per the 0/1/2/3 contract

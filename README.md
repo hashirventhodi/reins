@@ -1,9 +1,9 @@
 <div align="center">
 
-# Contract Runtime
+# Reins
 
 **A deterministic workflow engine for AI coding agents.**
-**Your AI writes the code. Contract Pipeline governs the process — typed contracts, human approval gates, reproducible telemetry.**
+**Your AI writes the code. Reins governs the process — typed contracts, human approval gates, reproducible telemetry.**
 
 [![tests](https://img.shields.io/badge/tests-339%20passing-brightgreen)](tests/)
 [![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
@@ -18,14 +18,14 @@ Consequential work moves through five contracted phases and pauses at three
 points for your approval. Everyday work takes the **express lane** — one
 stop, still reviewed and still verified — and which lane applies is computed
 from the change, not argued by the agent. Either way it leaves a reproducible
-evidence trail. Contract Runtime ships with a Claude Code runtime, so all of
+evidence trail. Reins ships with a Claude Code runtime, so all of
 it is conversational: `/pipeline-task add`, `/pipeline-work`, done.
 
 AI coding agents are great at writing code and terrible at accountability.
 They plan in their heads, drift from what you asked, review their own work,
 and leave no record of any of it.
 
-Contract Pipeline replaces vibes with **five typed contracts**. Each phase of
+Reins replaces vibes with **five typed contracts**. Each phase of
 a task consumes one artifact and produces the next — hash-pinned, validated,
 and reviewable — with up to **three human approval gates**: confirm the
 intent, approve the plan, merge the result. Everything in between is
@@ -94,8 +94,8 @@ invoked by path, so it works identically inside Claude Code, Codex, CI,
 or any shell (D30).
 
 ```console
-$ git clone https://github.com/hashirventhodi/contract-runtime ~/Code/tools/contract-runtime
-$ cd ~/Code/tools/contract-runtime && ./install.sh
+$ git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
+$ cd ~/Code/tools/reins && ./install.sh
 $ python3 scripts/selftest.py     # prove determinism on this machine
 ```
 

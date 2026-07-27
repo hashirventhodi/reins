@@ -16,13 +16,13 @@ jobs:
         with: {ref: '${{ github.event.pull_request.head.sha }}', fetch-depth: 0}
       # Zero-install core (D30): clone and invoke by path — nothing is
       # pip-installed. Pin a tag/sha in place of main for reproducibility,
-      # or point CONTRACT_RUNTIME at a vendored checkout instead.
-      - run: git clone --depth 1 https://github.com/hashirventhodi/contract-runtime "$RUNNER_TEMP/contract-runtime"
+      # or point REINS_HOME at a vendored checkout instead.
+      - run: git clone --depth 1 https://github.com/hashirventhodi/reins "$RUNNER_TEMP/reins"
       - name: record merge + extract
         run: |
           TASK=$(basename "$(ls -d .dev/tasks/*/ | head -1)")   # or derive from branch name
-          python3 "$RUNNER_TEMP/contract-runtime/pipeline_cli.py" decide merged "$TASK" --commit "${{ github.event.pull_request.merge_commit_sha }}"
-          python3 "$RUNNER_TEMP/contract-runtime/pipeline_cli.py" extract "$TASK" --append
+          python3 "$RUNNER_TEMP/reins/pipeline_cli.py" decide merged "$TASK" --commit "${{ github.event.pull_request.merge_commit_sha }}"
+          python3 "$RUNNER_TEMP/reins/pipeline_cli.py" extract "$TASK" --append
       - name: push telemetry to main
         run: |
           git checkout ${{ github.event.pull_request.base.ref }} -- . || true

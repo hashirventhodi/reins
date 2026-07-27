@@ -3,8 +3,8 @@
 Requirements: Python ≥ 3.9, git. Zero dependencies — nothing is
 pip-installed, nothing lands on PATH (D30).
 
-    git clone https://github.com/hashirventhodi/contract-runtime ~/Code/tools/contract-runtime
-    cd ~/Code/tools/contract-runtime
+    git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
+    cd ~/Code/tools/reins
     ./install.sh                  # idempotent; honors $CLAUDE_HOME
     python3 scripts/selftest.py   # deployment acceptance: proves the core
                                   # derives deterministically on this machine
@@ -19,7 +19,7 @@ What install.sh does (and ALL it does):
 The last symlink is the whole invocation story: every command, skill and
 hook calls `python3 ~/.claude/pipeline/core/pipeline_cli.py <cmd>` — no
 PATH entry, no venv, no pip. Non-Claude runtimes (Codex, CI) point
-`$CONTRACT_RUNTIME` at any checkout and use the same entry point.
+`$REINS_HOME` at any checkout and use the same entry point.
 
 Verify the runtime surface (in Claude Code, inside any repo after
 `python3 ~/.claude/pipeline/core/pipeline_cli.py init`): `/pipeline-task`,

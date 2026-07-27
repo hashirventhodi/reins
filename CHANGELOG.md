@@ -1,7 +1,10 @@
 # Changelog
 
-## 2.0.0 — contract-runtime
+## 2.0.0 — reins
 
+- The project is named **reins** (D32); repo
+  `hashirventhodi/reins`, env override `$REINS_HOME`. Briefly named
+  contract-runtime during the port.
 - Runtime commands renamed to a claimed namespace: `/pipeline-work`,
   `/pipeline-task`, `/pipeline-status`, … (D31). The unprefixed names
   collided with other skill suites in `~/.claude/commands`; install.sh

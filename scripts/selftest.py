@@ -81,8 +81,8 @@ def main():
           proc.returncode == 0 and "task" in proc.stdout, proc.stderr)
 
     # 2. hash determinism against an embedded constant
-    check("sha256 golden", artifact.sha256_bytes(b"contract-runtime\n") ==
-          "sha256:dd7c37240310dbb3a7160c8adbae571d550c177567910dd280bc3a771269943e")
+    check("sha256 golden", artifact.sha256_bytes(b"reins\n") ==
+          "sha256:8dd411ef756e4cd0a774da3d7af010150f4966f092e0ff21ffd5285e5758eed1")
 
     # 3. fixture chain integrity from first principles
     for lane, task_dir in (("happy", HAPPY), ("express", EXPRESS)):
