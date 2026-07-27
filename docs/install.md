@@ -3,9 +3,11 @@
 Requirements: Python ≥ 3.9, git. Zero dependencies — nothing is
 pip-installed, nothing lands on PATH (D30).
 
-Shortcut via [skills.sh](https://skills.sh):
-`npx skills add hashirventhodi/reins -g`, then invoke `/reins` in your
-agent — it runs the steps below for you (D33). Manual path:
+One-command install via [skills.sh](https://skills.sh):
+`npx skills add hashirventhodi/reins -g` copies the entire system into
+`~/.claude/skills/reins` (core, contracts, runtime, fixtures — the repo
+*is* the skill, D34); then invoke `/reins` once and it performs the
+wiring below. Manual path:
 
     git clone https://github.com/hashirventhodi/reins ~/Code/tools/reins
     cd ~/Code/tools/reins

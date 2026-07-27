@@ -99,9 +99,15 @@ $ cd ~/Code/tools/reins && ./install.sh
 $ python3 scripts/selftest.py     # prove determinism on this machine
 ```
 
-Or via [skills.sh](https://skills.sh): `npx skills add hashirventhodi/reins -g`
-installs the `/reins` bootstrap skill — invoke `/reins` once and it
-performs the three steps above for you (D33).
+Or in one command via [skills.sh](https://skills.sh) — this installs
+the *whole* system, not a stub (D34):
+
+```console
+$ npx skills add hashirventhodi/reins -g
+```
+
+Then invoke `/reins` in your agent once; it wires the commands and
+reviewer agent in and runs the selftest.
 
 In any repository, set it up once:
 

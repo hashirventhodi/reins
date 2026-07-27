@@ -779,3 +779,38 @@ so it isn't re-litigated without new grounding."
   zero runtime behavior changed. The install itself is still install.sh,
   single-sourced — the registry entry is a doorway to it, not a second
   implementation.
+
+## D34 — the repo *is* the skill: skills.sh installs everything (Tier 0)
+
+- **Problem:** D33 concluded that a skills.sh install could only be a
+  bootstrap that clones the repo, on the premise that the CLI "copies
+  skill directories and nothing else". The premise was half-observed.
+  The copy is *recursive* — an installed skill brings its whole
+  directory, subdirectories and scripts included — and the CLI treats a
+  repository with a root `SKILL.md` as one skill whose directory is the
+  repository (confirmed by its own `--full-depth` flag: "search all
+  subdirectories **even when a root SKILL.md exists**"). D33 shipped a
+  clone-on-first-use step that was never necessary.
+- **Why:** the correction was found by testing rather than reading —
+  installing a known multi-file skill and listing what landed. It
+  matters because the bootstrap traded away the property that makes the
+  design work: with a root SKILL.md, `npx skills add hashirventhodi/reins`
+  delivers the core, the contract texts, the runtime and the executable
+  fixtures in one copy, with no network step, no clone path to get
+  wrong, and — critically — **no vendoring**. There is exactly one copy
+  of the core in the repository, so the drift that D30 refused to accept
+  cannot arise.
+- **Smallest change:** `SKILL.md` moved to the repository root and
+  `skills/` deleted (a second scanned copy would have been the vendoring
+  D30 rejected). The skill's instructions shrink to the one thing a
+  skills installer genuinely cannot do — register slash commands and the
+  reviewer subagent — by running the payload's own `install.sh` and then
+  `scripts/selftest.py`, both idempotent, both local.
+  `test_repo_root_is_the_distributable_skill` pins the payload contents
+  and the absence of any second scanned skill directory.
+- **Why not architectural:** distribution only; zero product bytes
+  changed and the install itself is still `install.sh`, single-sourced.
+  Recorded as a correction to D33 rather than an edit to it — the log is
+  append-only, and the useful record here is that a distribution
+  assumption was taken from documentation and disproved by a five-minute
+  experiment.

@@ -288,17 +288,26 @@ def test_followups_command_respects_the_boundaries():
         assert required in text, required
 
 
-def test_bootstrap_skill_installs_the_real_thing():
-    """skills.sh distribution (D33): the CLI copies skill directories and
-    nothing else, so the published skill must bootstrap the full install
-    rather than pretend to be it. It stays thin, points at the canonical
-    repo and install.sh, and forbids improvised installs."""
-    skill = (ROOT / "skills" / "reins" / "SKILL.md").read_text()
-    assert "github.com/hashirventhodi/reins" in skill
+def test_repo_root_is_the_distributable_skill():
+    """skills.sh distribution (D34): a root SKILL.md makes the whole repo
+    the skill payload, so `npx skills add` copies the core, contracts,
+    runtime and fixtures — a full install, not a stub. The skill's own
+    job is only the wiring a skills installer cannot do (commands,
+    subagent), and it must not improvise an alternative."""
+    skill = (ROOT / "SKILL.md").read_text()
+    assert skill.startswith("---\n")
+    assert "name: reins" in skill
     assert "install.sh" in skill and "selftest.py" in skill
     assert "no pip, no PATH edits" in skill
-    assert len(skill.splitlines()) <= 40   # a bootstrap, not a manual
-    # and it is the ONLY skill in a location the skills CLI scans —
-    # the contract skills are runtime-internal and broken without the
-    # full install, so they must stay out of scanned paths.
-    assert [p.name for p in (ROOT / "skills").iterdir()] == ["reins"]
+    assert len(skill.splitlines()) <= 45          # a wiring step, not a manual
+    # No second SKILL.md in a location the skills CLI scans by default:
+    # the contract skills live under runtime/ and are meaningless without
+    # the wiring, so they must not be independently installable.
+    assert not (ROOT / "skills").exists()
+    for scanned in ("skills", ".claude/skills", ".agents/skills"):
+        assert not (ROOT / scanned).exists(), scanned
+    # everything the payload must carry for the wiring to succeed
+    for needed in ("install.sh", "pipeline_cli.py", "pipeline", "contracts",
+                   "runtime/claude/commands", "runtime/claude/agents",
+                   "scripts/selftest.py", "tests/fixtures"):
+        assert (ROOT / needed).exists(), needed
