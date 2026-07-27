@@ -1,0 +1,10 @@
+# Python bytecode. Never source, never reviewable, and version-specific —
+# the tree was carrying both cpython-312 and cpython-314 copies of every
+# test module.
+__pycache__/
+*.py[cod]
+
+# Deliberately NOT ignored: .dev/tasks/ and telemetry.jsonl are shared,
+# durable records. The task directory is the audit trail, and
+# runtime/github/workflows/telemetry.yml commits telemetry.jsonl at merge —
+# ignoring either would silently break provenance and the quarterly review.

@@ -1,0 +1,43 @@
+{
+  "assumptions_unverified_count": 1,
+  "blocking_questions_count": 0,
+  "disposition": null,
+  "duration_by_phase": {
+    "implement": 1020,
+    "plan": 480,
+    "refine": 300,
+    "research": 300,
+    "review": 840
+  },
+  "escalations": [],
+  "intent_edited_at_gate": false,
+  "intent_request_delta": 0.773,
+  "ledger_entries": {
+    "by_status": {
+      "within-autonomy": 1
+    },
+    "count": 1
+  },
+  "nongoals_count": 2,
+  "out_of_scope_count": 3,
+  "outcome": "merged:f00dfeed",
+  "pipeline": 1,
+  "plan_edited_at_gate": true,
+  "self_corrections": null,
+  "task": "T-2026-07-25-request-id-header",
+  "task_ref": "local",
+  "undeclared_deviations_found": false,
+  "verdict_sequence": [
+    "approve-with-fixes"
+  ],
+  "verifications": {
+    "by_verdict": {
+      "pass": 1
+    },
+    "by_verifier": {
+      "tests": 1
+    },
+    "count": 1,
+    "standard_touched": true
+  }
+}

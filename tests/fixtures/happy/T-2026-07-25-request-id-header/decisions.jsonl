@@ -1,0 +1,3 @@
+{"edited": false, "intent_hash": "sha256:3572fb1e77fcada4dd818311dde7d74c63845b0628166a4c0ba463002c24024a", "ts": "2026-07-25T09:07:00Z", "type": "intent_confirmed"}
+{"edited": true, "plan_hash": "sha256:72a99186a4e7be16045d6c8d4c75597b43c846450ee30d40d5bcd8dd496b741e", "ts": "2026-07-25T09:24:00Z", "type": "plan_approved"}
+{"evidence_hash": "sha256:5d8da23c1e5a7b9b51f96ce98d6e6e4e0379d477ad807cbe0fd4849855d71ee6", "predicate": "plan verifications for AC1-AC3 pass", "standard_touched": true, "tool": "pytest 9.1.1", "tree_ref": "git:263e2221f7ddde8b9f9f0138762de1d116b4d8c0", "ts": "2026-07-25T09:45:00Z", "type": "verification", "verdict": "pass", "verifier": "tests"}

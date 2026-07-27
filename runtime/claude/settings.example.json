@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git reset --hard*)"
+    ],
+    "allow": [
+      "Bash(python3 * pipeline_cli.py *)",
+      "Bash(python3 -m pipeline.*)",
+      "Bash(git diff*)", "Bash(git log*)", "Bash(git show*)", "Bash(git status*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Read",
+        "hooks": [{"type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/protect-paths.sh"}]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{"type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-check.sh"}]
+      }
+    ]
+  },
+  "_comment": "guard-execution-phase.sh ships disabled; add it under PreToolUse Edit|Write to enable E2/P3 deterministic backing"
+}

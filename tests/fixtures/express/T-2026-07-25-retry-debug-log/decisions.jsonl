@@ -1,0 +1,2 @@
+{"floor": "express", "lane": "express", "ts": "2026-07-25T09:05:00Z", "type": "disposition"}
+{"evidence_hash": "sha256:e2695dada4151f7825cf16c58d9522d3f79f176c886a38ca61e5f86856256073", "predicate": "the suite passes and the new line is asserted", "standard_touched": true, "tool": "pytest 9.1.1", "tree_ref": "git:88500ab5ed2cc0a5a27cfeb8e33c15d69b758dbc", "ts": "2026-07-25T09:16:00Z", "type": "verification", "verdict": "pass", "verifier": "tests"}
