@@ -5,7 +5,7 @@
 **A deterministic workflow engine for AI coding agents.**
 **Your AI writes the code. Reins governs the process — typed contracts, human approval gates, reproducible telemetry.**
 
-[![tests](https://img.shields.io/badge/tests-340%20passing-brightgreen)](tests/)
+[![tests](https://img.shields.io/badge/tests-345%20passing-brightgreen)](tests/)
 [![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
 [![deps](https://img.shields.io/badge/dependencies-none%20(stdlib%20only)-lightgrey)](pyproject.toml)
 [![status](https://img.shields.io/badge/v2.0.0-stable-8A2BE2)](CHANGELOG.md)
@@ -135,10 +135,12 @@ runtime.) Then everything is conversational:
 
 ```text
 /reins-task add Add a request id header to every API response
-/reins-work T-2026-07-25-add-a-request-id-header
+/reins-work request-id
 ```
 
-(`/reins-task add` prints the task ID — use the one it gives you.)
+(`/reins-task add` prints the full task ID, but you never have to retype
+it: any unambiguous fragment resolves, and an ambiguous one lists the
+candidates instead of guessing.)
 
 `/reins-work` runs contract to contract and stops only when it needs you: it
 shows you the intent to confirm, the plan to approve, and reports when the

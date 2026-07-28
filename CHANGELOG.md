@@ -2,6 +2,13 @@
 
 ## 2.0.0 — Reins (2026-07-28)
 
+- `/reins-init` (D36) does the whole per-repo setup — task store, floor
+  policy, hooks, settings, .gitignore — additively and idempotently,
+  replacing six manual steps.
+- Task arguments accept any unambiguous fragment of an id (D37):
+  `/reins-work request-id` instead of the full
+  `T-2026-07-28-add-a-request-id-header-…`. Ambiguity lists candidates
+  rather than guessing; exact ids always win.
 - One name everywhere (D35): commands are `/reins-work`, `/reins-task`,
   `/reins-status`, …; the package is `reins/`, the entry point
   `reins_cli.py`, the install path `~/.claude/reins/`. The `/pipeline-*`

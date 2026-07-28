@@ -124,7 +124,7 @@ staleness propagates transitively.
 Fixtures are generated (`scripts/regen_fixtures.py`), never hand-written,
 so every pinned hash is real. Two acceptances, deliberately different:
 
-- `python3 -m pytest -q` — 340 tests, the *development* acceptance.
+- `python3 -m pytest -q` — 345 tests, the *development* acceptance.
 - `python3 scripts/selftest.py` — the *deployment* acceptance (D30):
   stdlib only, no pytest, self-locating, and runnable on any fresh
   install. It re-derives every fixture pin from first principles and

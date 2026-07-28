@@ -84,8 +84,38 @@ def _slug(title: str) -> str:
     return s[:40].rstrip("-") or "task"
 
 
+def _resolve_task(root: Path, ref: str) -> str:
+    """Resolve a task reference to exactly one task id (D37).
+
+    Ids are descriptive on purpose — `.dev/tasks/` should read as a
+    ledger — but that makes them long to type, and the noisy part (the
+    date) comes first, so prefix matching would not help. An exact id
+    always wins; otherwise a case-insensitive substring must match
+    exactly one task. Ambiguity is an error listing the candidates,
+    never a guess: acting on the wrong task is the one outcome worth
+    more than the keystrokes saved."""
+    base = root / TASKS_DIR
+    if not ref:
+        raise PipelineError("empty task reference")
+    d = base / ref
+    if d.is_dir():
+        return ref
+    if not base.is_dir():
+        raise PipelineError(f"no tasks directory: {base} (run init first)")
+    tasks = sorted(p.name for p in base.iterdir() if p.is_dir())
+    hits = [t for t in tasks if ref.lower() in t.lower()]
+    if len(hits) == 1:
+        return hits[0]
+    if not hits:
+        raise PipelineError(f"no such task: {ref} (looked in {base})")
+    listing = "\n  ".join(hits)
+    raise PipelineError(
+        f"ambiguous task reference {ref!r} — {len(hits)} tasks match:\n"
+        f"  {listing}\nuse a longer fragment or the full id")
+
+
 def _task_dir(root: Path, task_id: str) -> Path:
-    d = root / TASKS_DIR / task_id
+    d = root / TASKS_DIR / _resolve_task(root, task_id)
     if not d.is_dir():
         raise PipelineError(f"no such task: {task_id} (looked in {d})")
     return d

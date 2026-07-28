@@ -21,6 +21,15 @@ from the repo root.
 Global flag: `--root PATH` (default `.`) points every command at another
 repository root.
 
+**Task references (D37).** Anywhere a command takes `<id>`, any
+unambiguous fragment of the id works — ids are descriptive, so
+`reins status request-id` beats retyping
+`T-2026-07-28-add-a-request-id-header-to-every-api-res`. An exact id
+always wins; otherwise a case-insensitive substring must match exactly
+one task. If it matches several the command refuses and lists them,
+because acting on the wrong task costs more than the keystrokes
+saved.
+
 Audiences:
 - **Runtime authors** — implement the normative loop
   (docs/state-machine.md §orchestrator) by shelling out to these commands.

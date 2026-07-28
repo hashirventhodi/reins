@@ -906,3 +906,33 @@ so it isn't re-litigated without new grounding."
 - **Why not architectural:** no product bytes; the command shells out to
   the same `init` subcommand as before and derives nothing. The manual
   sequence stays documented for non-Claude runtimes.
+
+## D37 — a task reference is any unambiguous fragment (Tier 1)
+
+- **Problem:** task ids are descriptive by design —
+  `T-2026-07-28-add-a-request-id-header-to-every-api-res` — which makes
+  `.dev/tasks/` read as a ledger and makes git history legible. It also
+  makes every command unusable by hand: nobody types that, and the
+  grounding instance is the author refusing to (`/reins-work
+  T-2026-07-25-...` — "whose gonna type all this?").
+- **Why:** the id serves two masters. As a *record* it should be
+  descriptive and stable; as an *argument* it should be short. Those are
+  reconcilable, because only the record needs to be canonical: keep the
+  id exactly as it is and widen what counts as a reference to it.
+  Shortening the id itself was rejected — it would trade a typing cost
+  for a legibility loss in the directory, the telemetry `task` field and
+  the `followup:<parent>` convention, and would break every existing
+  task. Note that *prefix* matching (git's answer) does not help here:
+  the noisy part, the date, comes first.
+- **Smallest change:** `_resolve_task` in `reins/cli.py`, called only by
+  `_task_dir`, so all thirteen task-taking subcommands gain it at once
+  and nothing else in the product ever sees anything but a full id. An
+  exact id always wins; otherwise a case-insensitive substring must
+  match exactly one task. Ambiguity raises, listing every candidate —
+  acting on the wrong task is worth far more than the keystrokes saved,
+  so the failure direction is refusal, never a guess. Backward
+  compatible by construction: every id that worked still works, pinned
+  by `test_exact_task_id_still_resolves`.
+- **Why not architectural:** additive resolution at the CLI boundary. No
+  artifact, schema, status, decision type or telemetry field changes;
+  ids on disk are untouched, so no PIPELINE_VERSION bump.

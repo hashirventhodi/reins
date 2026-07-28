@@ -6,7 +6,9 @@ model-independent (blueprint §12)."""
 
 from __future__ import annotations
 
+import io
 import json
+from contextlib import redirect_stdout
 from pathlib import Path
 
 import pytest
@@ -371,3 +373,51 @@ def test_frontmatter_without_init_still_refuses_but_names_the_fix(tmp_path, caps
     f.write_text("# Intent\n", encoding="utf-8")
     assert cli.main(["frontmatter", str(f), "--set", "pipeline=1"]) != 0
     assert "--init" in capsys.readouterr().err
+
+
+# --- task reference resolution (D37) ---------------------------------
+
+def _seed_tasks(tmp_path, titles):
+    ids = []
+    for t in titles:
+        out = io.StringIO()
+        with redirect_stdout(out):
+            assert run("--root", str(tmp_path), "task", "add", "--title", t,
+                       "--body", "b") == 0
+        ids.append(out.getvalue().strip())
+    return ids
+
+
+def test_exact_task_id_still_resolves(tmp_path):
+    """Backward compatibility: nothing that worked before may break."""
+    (full,) = _seed_tasks(tmp_path, ["add a request id header"])
+    assert run("--root", str(tmp_path), "status", full) in (0, 2, 3)
+
+
+def test_a_fragment_resolves_when_unambiguous(tmp_path):
+    """The point of D37: the id is long and its noisy part (the date)
+    comes first, so a substring — not a prefix — is what a human types."""
+    (full,) = _seed_tasks(tmp_path, ["add a request id header"])
+    for fragment in ("request-id", "REQUEST-ID", "header", "add-a-request"):
+        out = io.StringIO()
+        with redirect_stdout(out):
+            run("--root", str(tmp_path), "status", fragment, "--json")
+        assert json.loads(out.getvalue())["task"] == full, fragment
+
+
+def test_ambiguous_fragment_refuses_and_lists_candidates(tmp_path, capsys):
+    """Acting on the wrong task costs more than the keystrokes saved, so
+    ambiguity errors rather than guessing."""
+    ids = _seed_tasks(tmp_path, ["retry the upload path",
+                                 "retry the download path"])
+    assert run("--root", str(tmp_path), "status", "retry") == 1
+    err = capsys.readouterr().err
+    assert "ambiguous" in err
+    for i in ids:                      # every candidate is named
+        assert i in err
+
+
+def test_unknown_fragment_is_a_usage_error(tmp_path, capsys):
+    _seed_tasks(tmp_path, ["add a request id header"])
+    assert run("--root", str(tmp_path), "status", "nonexistent") == 1
+    assert "no such task" in capsys.readouterr().err
