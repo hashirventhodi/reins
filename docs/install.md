@@ -60,7 +60,7 @@ The core itself:
 
 Contributors also run the development suite from a checkout:
 
-    python3 -m pytest -q          # 383 tests, ~10s (needs pytest)
+    python3 -m pytest -q          # 407 tests, ~10s (needs pytest)
 
 ## Uninstall (complete)
 

@@ -5,6 +5,14 @@
 - `/reins-init` (D36) does the whole per-repo setup — task store, floor
   policy, hooks, settings, .gitignore — additively and idempotently,
   replacing six manual steps.
+- Floor policy is now fitted, not templated (D39): named presets via
+  `extends: [reins:base, reins:auth, ...]`, plus `reins policy
+  audit|propose|presets` and a `/reins-policy` command that reports dead
+  patterns, ungoverned sensitive areas, and how your real change sizes
+  meet the limits — then stops for approval. Every preset ships enabled;
+  narrowing is a human decision.
+- Fixed: `/reins-init` implied `telemetry.jsonl` lived under `.dev/`; it
+  is created at the repository root.
 - Task ids are now `<NNN>-<slug>` (D38) — `001-add-a-request-id-header` —
   allocated sequentially per repository, never reused, and optionally
   Jira-shaped via `task_key: API`. Identity moved into a dedicated

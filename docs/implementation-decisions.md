@@ -986,3 +986,50 @@ so it isn't re-litigated without new grounding."
   `title:` is an optional frontmatter field the validator does not
   require, so requests written before it still validate. Fixtures were
   regenerated to the new scheme and remain byte-reproducible.
+
+## D39 — the floor policy is fitted by proposal, not shipped as a template (Tier 1)
+
+- **Problem:** the starter `floor:` block was a static list every repo was
+  "expected to edit", which means a list nobody edits. Run against a real
+  monorepo it failed three ways at once: patterns matching nothing here
+  (`**/go.mod` in a TypeScript shop), a sensitive area matched by nothing
+  (`backend-core/auth-service/` slips past `**/auth/**`, leaving JWT
+  issuance and RBAC on the cheap lane), and limits so tight that
+  essentially every real change landed in `full` — a floor that is always
+  triggered is not a control, it is noise people learn to override.
+- **Why:** three mature mechanisms answer exactly this, and all three are
+  adopted rather than invented. **Presets over templates** — Renovate's
+  `extends:`, so a repo names bundles instead of inheriting forty
+  copy-pasted globs, bundles improve centrally, and a reader can trace
+  where a rule came from. **Propose, never write** — Renovate onboards by
+  opening a PR proposing a config a human merges; here that convention
+  meets a harder constraint, because the floor is the agent's own
+  oversight bar and an agent that can widen it silently has no bar at all
+  (D18). **Report fit, do not fit blindly** — deriving config from history
+  is accepted practice (CODEOWNERS generators do it from `git log`), but
+  peer-review research (SmartBear/Cisco) puts effective review at 200-400
+  changed lines with defect detection falling from ~87% under 100 lines to
+  ~28% past 1,000. So a repo whose median change touches 22 files does not
+  need a higher bar — that is a repo where most changes genuinely are not
+  small, and auto-fitting the limits would ratify precisely what the floor
+  exists to catch.
+- **Smallest change:** `reins/policy.py` — presets, `extends` resolution,
+  dead-pattern and coverage-gap detection, and limit fit — all pure, over
+  facts the runtime supplies because it owns git (D12). `reins policy
+  audit|propose|presets` exposes it; `/reins-policy` gathers the facts,
+  presents a decision, and STOPS for an explicit reply. Every audit field
+  is actionable: a preset to add, one to drop, a hand-written pattern that
+  can never fire, an ungoverned area with an example file, or a limit to
+  weigh. A preset's own patterns are exempt from dead-pattern reporting —
+  `**/secrets/**` matching nothing is the desired state, not a defect.
+- **The direction of the default, chosen deliberately:** the starter now
+  enables *every* preset rather than a minimal set. A first draft shipped
+  `extends: [reins:base]` and was rejected on its own tests — it governed
+  less than the old template, so `/reins-init` would have quietly reduced
+  protection. Over-governing costs a `full` lane on some changes; under-
+  governing costs oversight on an auth service. Tightening is automatic,
+  loosening is a decision.
+- **Why not architectural:** additive. `floor.compute` is untouched and
+  still consumes the same shape; presets resolve into it. An unconfigured
+  repo still yields `full`, and a repo counts as configured only if it
+  declares `extends:` or `floor:`, so the fail-safe is unchanged.

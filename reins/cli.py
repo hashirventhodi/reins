@@ -20,10 +20,12 @@ from pathlib import Path
 from . import artifact as art
 from . import ids
 from . import miniyaml
+from . import policy as pol
 from . import decisions as dec
 from . import frontier as fr
 from . import validate as val
 from .errors import ArtifactParseError, PipelineError
+from .floor import DEFAULT_MAX_FILES, DEFAULT_MAX_LINES
 from .schemas import (
     CHAIN,
     LANES,
@@ -56,30 +58,42 @@ telemetry: telemetry.jsonl
 
 # Task id prefix (D38). Ids are `<NNN>-<slug>`: 001-add-a-request-id-header.
 # Set a project key for Jira-shaped ids — `task_key: API` gives API-001-...
-# Numbering is per key, so adopting one starts its own series; existing
-# tasks keep the ids they were given, because ids are hashed into the
-# artifact chain and can never be renumbered.
+# Numbering is per key; existing tasks keep the ids they were given, because
+# ids are hashed into the artifact chain and can never be renumbered.
 # task_key: API
 
-# Minimum-process policy (D18). Facts come from the runtime; this is policy.
-# Patterns match at any depth: '**/auth/**' covers auth/ and src/auth/ alike.
+# Minimum-process policy (D18/D39). `extends` pulls in named preset bundles
+# so this file stays short and traceable; run `/reins-policy propose` to see
+# which presets fit this repository, which of these patterns match nothing,
+# and what share of your real changes would take the express lane.
+# `reins policy presets` lists every bundle and what it governs.
+# Every bundle is on by default: an unconfigured surface must fail toward
+# MORE process, never less (D18). `/reins-policy` reports which of these
+# match nothing here so you can drop them deliberately — tightening is
+# automatic, loosening is a decision.
+extends:
+  - reins:base
+  - reins:auth
+  - reins:database
+  - reins:api-contracts
+  - reins:infra
+  - reins:containers
+  - reins:node
+  - reins:python
+  - reins:go
+  - reins:rust
+  - reins:shared-libs
+
 floor:
-  governed_paths:
-    - .dev/config.yaml
-    - .github/**
-    - '**/auth/**'
-    - '**/crypto/**'
-    - '**/migrations/**'
-    - '**/infra/**'
-    - '**/secrets/**'
-    - '**/Dockerfile'
-    - '**/package.json'
-    - '**/pyproject.toml'
-    - '**/requirements*.txt'
-    - '**/go.mod'
-    - '**/Cargo.toml'
-  max_files: 3
-  max_lines: 100
+  # Add repo-specific paths here; presets cover the common ones.
+  governed_paths: []
+  # Limits are a review-effectiveness judgment, not a repo property: peer
+  # review is most effective at 200-400 changed lines, and defect detection
+  # falls sharply beyond that. Raising these widens the cheap lane over
+  # changes reviewers are measurably worse at — a real trade-off, so make
+  # it deliberately.
+  max_files: {DEFAULT_MAX_FILES}
+  max_lines: {DEFAULT_MAX_LINES}
 """
 
 
@@ -361,11 +375,8 @@ def cmd_decide(args) -> int:
     return OK
 
 
-def _floor_config(root: Path) -> dict | None:
-    """The `floor:` block from .dev/config.yaml, or None if absent.
-
-    None is meaningful, not an error: an unconfigured repo cannot judge any
-    change small, so the floor is `full` (D18)."""
+def _read_config(root: Path):
+    """The parsed `.dev/config.yaml`, or None if absent."""
     cfg = root / ".dev" / "config.yaml"
     if not cfg.exists():
         return None
@@ -373,8 +384,28 @@ def _floor_config(root: Path) -> dict | None:
         data = miniyaml.loads(cfg.read_text(encoding="utf-8")) or {}
     except miniyaml.MiniYamlError as exc:
         raise PipelineError(f"{cfg}: invalid YAML ({exc})") from exc
-    block = data.get("floor")
-    return block if isinstance(block, dict) else None
+    return data if isinstance(data, dict) else None
+
+
+def _floor_config(root: Path):
+    """The effective floor policy, or None if the repo configured none.
+
+    None stays meaningful, not an error: an unconfigured repo cannot
+    judge any change small, so the floor is `full` (D18). A repo counts
+    as configured only if it declares `extends:` or a `floor:` block —
+    presets resolve into the same shape the floor has always consumed
+    (D39), so nothing downstream knows the difference."""
+    data = _read_config(root)
+    if data is None:
+        return None
+    if not data.get("extends") and not isinstance(data.get("floor"), dict):
+        return None
+    try:
+        resolved = pol.resolve(data)
+    except ValueError as exc:
+        raise PipelineError(f"{root / '.dev' / 'config.yaml'}: {exc}") from exc
+    resolved.pop("presets", None)
+    return resolved
 
 
 def cmd_floor(args) -> int:
@@ -559,6 +590,47 @@ def cmd_extract(args) -> int:
     return OK
 
 
+def _supplied_lines(path):
+    """Facts come from the runtime, which owns git (D12): a file, or stdin."""
+    if path:
+        text = Path(path).read_text(encoding="utf-8")
+    elif not sys.stdin.isatty():
+        text = sys.stdin.read()
+    else:
+        text = ""
+    return [ln.strip() for ln in text.splitlines() if ln.strip()]
+
+
+def _supplied_samples(path):
+    """Change samples as `<files> <lines>` per line, or JSON objects."""
+    samples = []
+    for line in _supplied_lines(path):
+        if line.startswith("{"):
+            samples.append(json.loads(line))
+            continue
+        parts = line.split()
+        if len(parts) >= 2 and parts[0].isdigit() and parts[1].isdigit():
+            samples.append({"files": int(parts[0]), "lines": int(parts[1])})
+    return samples
+
+
+def cmd_policy(args) -> int:
+    """Audit or propose a floor policy. Never writes: the floor is the
+    agent's own oversight bar, so changing it is a human act (D18/D39)."""
+    root = Path(args.root)
+    paths = _supplied_lines(args.paths_file)
+    samples = _supplied_samples(args.samples_file)
+    if args.what == "presets":
+        out = {name: {"why": p.why, "governed_paths": list(p.governed_paths)}
+               for name, p in sorted(pol.PRESETS.items())}
+    elif args.what == "propose":
+        out = pol.propose(paths, samples)
+    else:
+        out = pol.audit(_read_config(root) or {}, paths, samples)
+    print(json.dumps(out, indent=2, sort_keys=True))
+    return OK
+
+
 def cmd_followups(args) -> int:
     """Projection only (D14, amended): creation is orchestration and
 
@@ -683,6 +755,14 @@ def build_parser() -> argparse.ArgumentParser:
     h = sub.add_parser("hash")
     h.add_argument("file")
     h.set_defaults(fn=cmd_hash)
+
+    po = sub.add_parser("policy")
+    po.add_argument("what", choices=["audit", "propose", "presets"])
+    po.add_argument("--paths-file", help="repo paths, one per line "
+                    "(default stdin); the runtime supplies them, D12")
+    po.add_argument("--samples-file", help="recent changes as '<files> "
+                    "<lines>' per line, for limit fit")
+    po.set_defaults(fn=cmd_policy)
 
     fu = sub.add_parser("followups")
     fu.add_argument("task")

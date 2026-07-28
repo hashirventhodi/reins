@@ -5,7 +5,7 @@
 **A deterministic workflow engine for AI coding agents.**
 **Your AI writes the code. Reins governs the process — typed contracts, human approval gates, reproducible telemetry.**
 
-[![tests](https://img.shields.io/badge/tests-383%20passing-brightgreen)](tests/)
+[![tests](https://img.shields.io/badge/tests-407%20passing-brightgreen)](tests/)
 [![python](https://img.shields.io/badge/python-3.9%2B-blue)](pyproject.toml)
 [![deps](https://img.shields.io/badge/dependencies-none%20(stdlib%20only)-lightgrey)](pyproject.toml)
 [![status](https://img.shields.io/badge/v2.0.0-stable-8A2BE2)](CHANGELOG.md)

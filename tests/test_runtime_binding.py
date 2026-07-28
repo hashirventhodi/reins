@@ -326,3 +326,20 @@ def test_init_command_owns_per_repo_setup():
     # additive, never destructive: the guarantee that makes it safe to re-run
     assert "never overwrite" in text.lower()
     assert "STOP" in text          # existing settings.json is the human's
+
+
+def test_policy_command_proposes_but_never_records(capsys):
+    """D39: the floor is the agent's own oversight bar, so the command
+    that fits it must gather facts, present a decision, and stop."""
+    text = (RUNTIME / "commands" / "reins-policy.md").read_text()
+    flat = " ".join(text.split())          # prose wraps; assertions must not
+    assert "git ls-files" in flat and "git log" in flat   # runtime owns git
+    assert "reins_cli.py policy" in flat                  # product judges
+    assert "STOP" in flat and "explicit human reply" in flat
+    assert "propose it, never record it" in flat and "D18" in flat
+    # and the starter policy must fail toward more process, not less
+    from reins import miniyaml, policy
+    from reins.cli import DEFAULT_CONFIG
+    shipped = policy.resolve(miniyaml.loads(DEFAULT_CONFIG))
+    assert set(shipped["presets"]) == set(policy.PRESETS), (
+        "every preset ships enabled; narrowing is a human decision")

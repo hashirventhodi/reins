@@ -54,6 +54,10 @@ staleness propagates transitively.
 - `reins/artifact.py` — parse/serialize/hash. Bodies round-trip
   byte-identically; hashing is over exact file bytes; fence-aware section
   splitting; typed all-or-nothing parse errors.
+- `reins/policy.py` — floor policy presets and repo-fit auditing (D39):
+  `extends` resolution, stack detection, dead-pattern and coverage-gap
+  reporting, and limit fit against both the repo's real change sizes and
+  the peer-review effectiveness band. Pure; facts come from the runtime.
 - `reins/ids.py` — task identity as pure functions (D38): slug
   generation, `<NNN>-<slug>` parsing, sequential allocation derived from
   the directory, duplicate-number detection, and the reference-matching
@@ -130,7 +134,7 @@ staleness propagates transitively.
 Fixtures are generated (`scripts/regen_fixtures.py`), never hand-written,
 so every pinned hash is real. Two acceptances, deliberately different:
 
-- `python3 -m pytest -q` — 383 tests, the *development* acceptance.
+- `python3 -m pytest -q` — 407 tests, the *development* acceptance.
 - `python3 scripts/selftest.py` — the *deployment* acceptance (D30):
   stdlib only, no pytest, self-locating, and runnable on any fresh
   install. It re-derives every fixture pin from first principles and

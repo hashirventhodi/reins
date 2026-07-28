@@ -82,6 +82,22 @@ Setup & intake
 - `reins task list|show <id>`
 
 Policy
+- `reins policy audit|propose|presets [--paths-file F] [--samples-file F]`
+  — fit the floor policy to this repository (D39). `audit` reports, against
+  the current config: presets worth adding, presets that match nothing here,
+  hand-written patterns that can never fire, sensitive areas left ungoverned
+  (with example files), and how your real change sizes meet the limits.
+  `propose` does the same for a repo with no policy yet; `presets` lists the
+  bundles. Facts are supplied, never gathered — the runtime owns git (D12) —
+  and nothing is ever written: the floor is the agent's own oversight bar,
+  so changing it is a human act (D18). `/reins-policy` drives all of this.
+
+  Policy is composed with `extends:` in `.dev/config.yaml`:
+
+      extends: [reins:base, reins:auth, reins:node]
+
+  Every preset ships enabled, because an unconfigured surface must fail
+  toward more process; narrowing it is a deliberate decision.
 - `reins floor <id> [--changed-paths-file F] [--lines-changed N] [--json]`
   — the minimum process a change deserves (D18). Facts are **supplied, not
   gathered**: git and repository inspection are the runtime's (D12), so the

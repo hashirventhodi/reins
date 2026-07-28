@@ -212,8 +212,9 @@ def test_shipped_policy_governs_at_any_depth(path: str):
     granting the cheap lane to (say) a session-token change. This is the
     fail-safe direction the floor exists to protect, so it is pinned."""
     from reins import miniyaml
+    from reins import policy as pol
     from reins.cli import DEFAULT_CONFIG
-    policy = miniyaml.loads(DEFAULT_CONFIG)["floor"]
+    policy = pol.resolve(miniyaml.loads(DEFAULT_CONFIG))
     assert any(fl.matches(path, g) for g in policy["governed_paths"]), path
     assert fl.compute(facts([path], 1), policy)["floor"] == "full"
 
@@ -221,8 +222,9 @@ def test_shipped_policy_governs_at_any_depth(path: str):
 def test_shipped_policy_still_lets_ordinary_source_through():
     """The counterweight: if everything is governed, express is inert."""
     from reins import miniyaml
+    from reins import policy as pol
     from reins.cli import DEFAULT_CONFIG
-    policy = miniyaml.loads(DEFAULT_CONFIG)["floor"]
+    policy = pol.resolve(miniyaml.loads(DEFAULT_CONFIG))
     for path in ("src/api/retry.py", "lib/format.ts", "docs/notes.md",
                  "tests/test_retry.py"):
         assert fl.compute(facts([path], 4), policy)["floor"] == "express", path

@@ -23,6 +23,7 @@ sys.path.insert(0, ROOT)
 
 from reins import artifact, decisions, floor, frontier  # noqa: E402
 from reins import miniyaml, telemetry, validate  # noqa: E402
+from reins import policy as pol  # noqa: E402
 from reins.cli import DEFAULT_CONFIG  # noqa: E402
 from reins.errors import PipelineError  # noqa: E402
 
@@ -131,7 +132,7 @@ def main():
               golden(f"frontier_{lane}.json", out + "\n", regen))
 
     # 6. floor policy vectors against the shipped default config
-    policy = miniyaml.loads(DEFAULT_CONFIG)["floor"]
+    policy = pol.resolve(miniyaml.loads(DEFAULT_CONFIG))
     vectors = [
         (["src/auth/token.py"], 5, "full"),      # governed path
         (["src/api/retry.py"], 5, "express"),    # small ordinary change
