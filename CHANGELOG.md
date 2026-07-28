@@ -2,6 +2,12 @@
 
 ## 2.0.0 — Reins (2026-07-28)
 
+- One name everywhere (D35): commands are `/reins-work`, `/reins-task`,
+  `/reins-status`, …; the package is `reins/`, the entry point
+  `reins_cli.py`, the install path `~/.claude/reins/`. The `/pipeline-*`
+  naming from D31 lasted one day and was refuted by first use: typing
+  `/reins` found nothing. The artifact frontmatter key `pipeline:` is
+  unchanged — that is the on-disk format, not a name in the UI.
 - Licensed **MIT**.
 - Public release; one-command install via skills.sh (D33, corrected by
   D34): `npx skills add hashirventhodi/reins -g` copies the entire
@@ -11,16 +17,16 @@
 - The project is named **reins** (D32); repo
   `hashirventhodi/reins`, env override `$REINS_HOME`. Briefly named
   contract-runtime during the port.
-- Runtime commands renamed to a claimed namespace: `/pipeline-work`,
-  `/pipeline-task`, `/pipeline-status`, … (D31). The unprefixed names
+- Runtime commands renamed to a claimed namespace: `/reins-work`,
+  `/reins-task`, `/reins-status`, … (D31). The unprefixed names
   collided with other skill suites in `~/.claude/commands`; install.sh
   now also removes stale unprefixed links on upgrade.
 - Repackaged so the core travels with its invoker (D30): it is invoked
-  by path (`python3 ~/.claude/pipeline/core/pipeline_cli.py`), never
+  by path (`python3 ~/.claude/reins/core/reins_cli.py`), never
   installed. The `bin/` PATH shim is retired; `install.sh` adds the
-  `~/.claude/pipeline/core` symlink.
+  `~/.claude/reins/core` symlink.
 - Zero dependencies: PyYAML replaced by the in-repo restricted-subset
-  parser/dumper `pipeline/miniyaml.py`. Timestamps are now plain strings
+  parser/dumper `reins/miniyaml.py`. Timestamps are now plain strings
   end-to-end (retires the D26 bug class at the parser).
 - Python floor lowered to 3.9 and asserted at the entry point.
 - New `scripts/selftest.py`: stdlib-only fresh-clone acceptance with
@@ -33,7 +39,7 @@
   "stable, not immutable" with a three-tier change ladder
   (docs/governance.md). The v1.0.0 entry below preserves the policy as
   written at tag time.
-- Runtime: `/pipeline-followups` (then `/followups`) — review-driven task
+- Runtime: `/reins-followups` (then `/followups`) — review-driven task
   intake via the `followup:<parent>` source-ref convention (Tier 0; zero
   product changes).
 - Adaptive workflow: the express lane, the computed floor and lane

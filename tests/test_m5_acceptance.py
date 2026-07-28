@@ -4,7 +4,7 @@
   A2 migration of an existing repo + rollback leaving zero residue
      (byte-identical tree);
   A3 a complete happy-path task, intake -> telemetry, using ONLY public
-     interfaces (the `pipeline_cli.py` entry point via subprocess — no
+     interfaces (the `reins_cli.py` entry point via subprocess — no
      in-process imports drive the flow);
   A4 dependency audit: product imports are stdlib only (D30), and the
      runtime -> pipeline direction never reverses."""
@@ -22,7 +22,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())
-ENTRY = ROOT / "pipeline_cli.py"
+ENTRY = ROOT / "reins_cli.py"
 PIPE = [sys.executable, str(ENTRY)]
 
 
@@ -51,10 +51,10 @@ def test_A1_clean_install_documented_steps_only(tmp_path: Path):
     # everything the doc promises, nothing else at top level
     claude = home / ".claude"
     assert sorted(p.name for p in claude.iterdir()) == [
-        "agents", "commands", "pipeline", "skills"]
-    assert (claude / "pipeline" / "contracts" / "intent.md").exists()
+        "agents", "commands", "reins", "skills"]
+    assert (claude / "reins" / "contracts" / "intent.md").exists()
     # the core runs by path through the installed symlink, no PATH entry
-    core_entry = claude / "pipeline" / "core" / "pipeline_cli.py"
+    core_entry = claude / "reins" / "core" / "reins_cli.py"
     assert core_entry.exists()
     proc = sh([sys.executable, str(core_entry), "--help"], cwd=tmp_path,
               check=False)
@@ -75,8 +75,8 @@ def make_legacy_repo(root: Path) -> None:
 def mock_produce(repo: Path, task_id: str, contract: str, minute: int) -> None:
     """Public-interface producer: writes the canned body, then wires ALL
 
-    frontmatter through the `pipeline_cli.py frontmatter` entry point."""
-    from pipeline import artifact  # test harness only reads templates
+    frontmatter through the `reins_cli.py frontmatter` entry point."""
+    from reins import artifact  # test harness only reads templates
     produced = {"intent": "intent", "findings": "findings",
                 "planning": "plan", "execution": "ledger",
                 "review": "review"}[contract]
@@ -155,7 +155,7 @@ def test_A2_A3_migration_happy_path_and_rollback(tmp_path: Path):
     # byte-identical tree, and verification evidence is not repo state.
     evidence = tmp_path / "verify-out.txt"
     evidence.write_bytes(b"3 passed\n")
-    from pipeline import artifact      # harness only; the path under test is ENTRY
+    from reins import artifact      # harness only; the path under test is ENTRY
     diff_ref = artifact.consumed_hashes(
         artifact.load(HAPPY / "review.md"))["diff"]
     sh([*PIPE, "verify", task_id, "--verifier", "tests",
@@ -205,7 +205,7 @@ THIRD_PARTY_OK: set[str] = set()   # D30: stdlib only
 
 
 def test_A4_product_imports_are_stdlib_only():
-    for py in (ROOT / "pipeline").glob("*.py"):
+    for py in (ROOT / "reins").glob("*.py"):
         tree = ast.parse(py.read_text())
         for node in ast.walk(tree):
             names = []
@@ -214,7 +214,7 @@ def test_A4_product_imports_are_stdlib_only():
             elif isinstance(node, ast.ImportFrom) and node.level == 0:
                 names = [(node.module or "").split(".")[0]]
             for name in names:
-                assert name in STDLIB_OK | THIRD_PARTY_OK | {"pipeline"}, (
+                assert name in STDLIB_OK | THIRD_PARTY_OK | {"reins"}, (
                     f"{py.name} imports {name!r}")
 
 
@@ -230,13 +230,13 @@ def test_A4_dependency_direction_holds():
         if not f.is_file():
             continue
         text = f.read_text(errors="ignore")
-        if "pipeline_cli.py" in text or "pipeline.cli" in text or \
-           "pipeline.validate" in text:
+        if "reins_cli.py" in text or "reins.cli" in text or \
+           "reins.validate" in text:
             consumes_cli = True
-        if "pipeline/contracts" in text:
+        if "reins/contracts" in text:
             consumes_contracts = True
         # nothing in the runtime may import product internals as a library
-        assert "from pipeline import" not in text, f
+        assert "from reins import" not in text, f
         assert "import pipeline\n" not in text, f
     assert consumes_cli and consumes_contracts
 
@@ -276,5 +276,5 @@ def test_A1_entry_guards_the_python_floor():
     stay parseable by old interpreters so its message actually prints."""
     text = ENTRY.read_text()
     guard = text.index("sys.version_info < (3, 9)")
-    assert guard < text.index("from pipeline.cli import main")
+    assert guard < text.index("from reins.cli import main")
     assert "requires Python >= 3.9" in text

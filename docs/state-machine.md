@@ -1,7 +1,7 @@
 # State Machine — Normative Reference
 
 This document is normative for every runtime binding. Behavior is
-implemented in `pipeline/frontier.py` and enforced by
+implemented in `reins/frontier.py` and enforced by
 `tests/test_frontier.py`; if this document and the code ever disagree,
 that is a bug of the same severity as schema/contract drift.
 
@@ -96,7 +96,7 @@ Consequences worth stating:
   pin for *format* only, never for currency — deciding whether a tree id is
   still current needs git, which stays outside the product (D12). The
   runtime verifies it at gate 3 by mechanical comparison; commits after
-  review surface as a warning and a /pipeline-review offer, not silent
+  review surface as a warning and a /reins-review offer, not silent
   AWAITING_MERGE.
 - **Verification (D19):** a task leaves UNVERIFIED when, for every verifier
   that has recorded against the **reviewed tree**, the latest record is
@@ -117,11 +117,11 @@ Consequences worth stating:
 
 ## Orchestrator (the normative loop)
 
-A runtime binding implements this loop; `runtime/claude/commands/pipeline-work.md`
+A runtime binding implements this loop; `runtime/claude/commands/reins-work.md`
 is the reference implementation.
 
 1. Ask the core for status — never derive it:
-   `python3 ~/.claude/pipeline/core/pipeline_cli.py status <task> --json`.
+   `python3 ~/.claude/reins/core/reins_cli.py status <task> --json`.
    Exit 3 is a *status* (a human is needed), not a failure (D29).
 2. Dispatch on `status` / `next_contract`: run the named contract, then
    `validate <task>`; on violations, quote them back to the same contract
@@ -142,5 +142,5 @@ not decide is a human reply or a computed function.
 decisions.jsonl bytes). Identical inputs produce byte-identical
 `to_json()` output regardless of directory location; the Frontier
 carries the task directory *name*, never a path, and no wall-clock time.
-This is what makes `/pipeline-work` idempotent and resumable, and what future
+This is what makes `/reins-work` idempotent and resumable, and what future
 runtimes may rely on.

@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact, cli, decisions as dec, frontier as fr
-from pipeline.schemas import PIPELINE_VERSION
+from reins import artifact, cli, decisions as dec, frontier as fr
+from reins.schemas import PIPELINE_VERSION
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())
@@ -354,7 +354,7 @@ def test_frontmatter_init_creates_the_fence(tmp_path):
     every artifact in every observed run cost a failed invocation plus a
     hand-written fence — in the one command that exists to keep hands off
     frontmatter."""
-    from pipeline import cli
+    from reins import cli
     f = tmp_path / "intent.md"
     f.write_text("# Intent\n\nbody\n", encoding="utf-8")
     assert cli.main(["frontmatter", str(f), "--init", "--set", "pipeline=1"]) == 0
@@ -366,7 +366,7 @@ def test_frontmatter_init_creates_the_fence(tmp_path):
 
 def test_frontmatter_without_init_still_refuses_but_names_the_fix(tmp_path, capsys):
     """Backward compatible: the old failure stands, now self-diagnosing."""
-    from pipeline import cli
+    from reins import cli
     f = tmp_path / "intent.md"
     f.write_text("# Intent\n", encoding="utf-8")
     assert cli.main(["frontmatter", str(f), "--set", "pipeline=1"]) != 0

@@ -427,12 +427,12 @@ def validate_task(task_dir: str | Path) -> Report:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Minimal entry point: ``python -m pipeline.validate <task_dir>``.
+    """Minimal entry point: ``python -m reins.validate <task_dir>``.
 
     Exit codes per blueprint §2.8: 0 valid, 1 usage, 2 violations."""
     args = sys.argv[1:] if argv is None else argv
     if len(args) != 1:
-        print("usage: python -m pipeline.validate <task_dir>", file=sys.stderr)
+        print("usage: python -m reins.validate <task_dir>", file=sys.stderr)
         return 1
     report = validate_task(args[0])
     print(json.dumps(report.to_dict(), indent=2))

@@ -14,11 +14,11 @@ if not path:
     sys.exit(0)
 try:
     core = os.environ.get("REINS_HOME") or os.path.expanduser(
-        "~/.claude/pipeline/core")
-    entry = os.path.join(core, "pipeline_cli.py")
+        "~/.claude/reins/core")
+    entry = os.path.join(core, "reins_cli.py")
     cmd = ([sys.executable, entry, "task", "list", "--json"]
            if os.path.exists(entry)
-           else [sys.executable, "-m", "pipeline.cli", "task", "list", "--json"])
+           else [sys.executable, "-m", "reins.cli", "task", "list", "--json"])
     proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
     rows = json.loads(proc.stdout or "[]")
 except Exception:

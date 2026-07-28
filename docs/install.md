@@ -30,15 +30,15 @@ Identical result; pick this if you intend to work on Reins itself.
 ## What install.sh does (and ALL it does)
 
 - symlinks `runtime/claude/skills/*` -> `~/.claude/skills/`
-- symlinks `runtime/claude/commands/pipeline-*.md` -> `~/.claude/commands/`
+- symlinks `runtime/claude/commands/reins-*.md` -> `~/.claude/commands/`
 - symlinks `runtime/claude/agents/reviewer.md` -> `~/.claude/agents/`
-- symlinks `contracts/` -> `~/.claude/pipeline/contracts`
-- symlinks the checkout itself -> `~/.claude/pipeline/core`
+- symlinks `contracts/` -> `~/.claude/reins/contracts`
+- symlinks the checkout itself -> `~/.claude/reins/core`
 - removes stale unprefixed command links left by installs from before the
-  `/pipeline-*` rename (D31), so nothing shadows the new names
+  `/reins-*` rename (D31), so nothing shadows the new names
 
 The `core` symlink is the whole invocation story: every command, skill and
-hook calls `python3 ~/.claude/pipeline/core/pipeline_cli.py <cmd>` — no
+hook calls `python3 ~/.claude/reins/core/reins_cli.py <cmd>` — no
 PATH entry, no venv, no pip. Non-Claude runtimes (Codex, CI) point
 `$REINS_HOME` at any checkout and use the same entry point.
 
@@ -49,14 +49,14 @@ completion.
 ## Verify
 
 The runtime surface, in Claude Code, inside any repo after
-`python3 ~/.claude/pipeline/core/pipeline_cli.py init`: `/pipeline-task`,
-`/pipeline-work` and `/pipeline-status` should be available, and
-`/pipeline-task add hello world` should print a task id.
+`python3 ~/.claude/reins/core/reins_cli.py init`: `/reins-task`,
+`/reins-work` and `/reins-status` should be available, and
+`/reins-task add hello world` should print a task id.
 
 The core itself:
 
-    python3 ~/.claude/pipeline/core/pipeline_cli.py --help
-    python3 ~/.claude/pipeline/core/scripts/selftest.py   # every line: ok
+    python3 ~/.claude/reins/core/reins_cli.py --help
+    python3 ~/.claude/reins/core/scripts/selftest.py   # every line: ok
 
 Contributors also run the development suite from a checkout:
 
@@ -66,8 +66,8 @@ Contributors also run the development suite from a checkout:
 
 Remove what install.sh created, then the payload:
 
-    rm -rf ~/.claude/pipeline/core ~/.claude/pipeline/contracts \
-           ~/.claude/agents/reviewer.md ~/.claude/commands/pipeline-*.md
+    rm -rf ~/.claude/reins/core ~/.claude/reins/contracts \
+           ~/.claude/agents/reviewer.md ~/.claude/commands/reins-*.md
     rm -rf ~/.claude/skills/{intent,findings,planning,execution,review}-contract
     rm -rf ~/.claude/skills/reins        # option A payload
     # option B: also delete the clone, e.g. ~/Code/tools/reins

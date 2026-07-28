@@ -17,8 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from pipeline.artifact import sha256, sha256_bytes  # noqa: E402
-from pipeline.schemas import GIT_REF_PREFIX, PIPELINE_VERSION  # noqa: E402
+from reins.artifact import sha256, sha256_bytes  # noqa: E402
+from reins.schemas import GIT_REF_PREFIX, PIPELINE_VERSION  # noqa: E402
 
 TASK = "T-2026-07-25-request-id-header"
 DIR = ROOT / "tests" / "fixtures" / "happy" / TASK
@@ -283,7 +283,7 @@ approve-with-fixes
 
     print(f"regenerated {DIR}")
 
-    from pipeline import decisions as dec
+    from reins import decisions as dec
 
     dec.append(DIR, dec.make(
         "intent_confirmed", "2026-07-25T09:07:00Z",
@@ -311,7 +311,7 @@ def express() -> None:
     Gates 1 and 2 cannot fire because intent.md and plan.md never exist —
     the immutable request is the standard the review adjudicates against.
     """
-    from pipeline import decisions as dec
+    from reins import decisions as dec
 
     EXPRESS_DIR.mkdir(parents=True, exist_ok=True)
     for old in EXPRESS_DIR.glob("*.md"):

@@ -21,10 +21,10 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, ROOT)
 
-from pipeline import artifact, decisions, floor, frontier  # noqa: E402
-from pipeline import miniyaml, telemetry, validate  # noqa: E402
-from pipeline.cli import DEFAULT_CONFIG  # noqa: E402
-from pipeline.errors import PipelineError  # noqa: E402
+from reins import artifact, decisions, floor, frontier  # noqa: E402
+from reins import miniyaml, telemetry, validate  # noqa: E402
+from reins.cli import DEFAULT_CONFIG  # noqa: E402
+from reins.errors import PipelineError  # noqa: E402
 
 GOLDENS = os.path.join(ROOT, "scripts", "goldens")
 FIXTURES = os.path.join(ROOT, "tests", "fixtures")
@@ -75,7 +75,7 @@ def main():
     # 1. entry point runs from a foreign cwd with no PYTHONPATH
     env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
     proc = subprocess.run(
-        [sys.executable, os.path.join(ROOT, "pipeline_cli.py"), "--help"],
+        [sys.executable, os.path.join(ROOT, "reins_cli.py"), "--help"],
         cwd=tempfile.gettempdir(), env=env, capture_output=True, text=True)
     check("entry-point smoke (foreign cwd, no PYTHONPATH)",
           proc.returncode == 0 and "task" in proc.stdout, proc.stderr)

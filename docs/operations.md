@@ -3,8 +3,8 @@
 Daily-usage answers that are true by construction; nothing here is a
 workaround for a bug.
 
-Command shorthand: `pipeline <cmd>` below abbreviates the real
-invocation, `python3 ~/.claude/pipeline/core/pipeline_cli.py <cmd>`
+Command shorthand: `reins <cmd>` below abbreviates the real
+invocation, `python3 ~/.claude/reins/core/reins_cli.py <cmd>`
 (docs/cli.md). There is no binary of that name on PATH.
 
 ## Undoing a lane
@@ -20,12 +20,12 @@ the artifacts already exist, so nothing is saved. There is no way to
 un-consent.
 
 ## Undoing a bypass (historical)
-`pipeline decide bypass` was retired in D22; the express lane replaced it
+`reins decide bypass` was retired in D22; the express lane replaced it
 and keeps adjudication. Tasks bypassed before that change still resolve to
 BYPASSED and still extract with outcome `bypassed` — decisions are
 append-only history and the reader is kept for exactly that reason. There
 is no undo: a bypass pins the immutable request, so its hash always
-matches. Recovery is a new task with the same body (`/pipeline-task add`, paste or
+matches. Recovery is a new task with the same body (`/reins-task add`, paste or
 re-fetch the request), which today runs express and gets reviewed.
 
 ## Abandoning a task
@@ -38,7 +38,7 @@ the task produced telemetry already (merged/bypassed), the record stays
 ## Corrupted decisions.jsonl lines
 Tolerated by design (strict append, tolerant read): bad lines are
 skipped and surfaced as `warnings` on the Frontier and in
-`pipeline status --json`. Fix by removing the corrupt line if it
+`reins status --json`. Fix by removing the corrupt line if it
 bothers you; never rewrite valid lines.
 
 ## Consent against a stale artifact
@@ -47,20 +47,20 @@ the chain must be repaired first and the frontier tells you so.
 
 ## Post-review commits (diff currency)
 See D15: the validator does not police the review's diff pin (git stays
-outside the product). /pipeline-work verifies at gate 3 and offers /pipeline-review on
+outside the product). /reins-work verifies at gate 3 and offers /reins-review on
 mismatch. If you merge anyway, that is a human decision the record
 preserves.
 
 ## Hooks that seem inert
 Hooks resolve the core by path, never through PATH (D30): `$REINS_HOME`
-if set, else `~/.claude/pipeline/core`, falling back to `python3 -m
-pipeline.cli` in a development checkout. The guard hook additionally
-fails open outside a pipeline repo, by design.
+if set, else `~/.claude/reins/core`, falling back to `python3 -m
+reins.cli` in a development checkout. The guard hook additionally
+fails open outside a Reins repo, by design.
 
 If a hook seems inert, check the link the hooks actually use — not
-`which pipeline`, which is expected to print nothing:
+`which reins`, which is expected to print nothing:
 
-    ls -l ~/.claude/pipeline/core        # must resolve to a checkout
+    ls -l ~/.claude/reins/core        # must resolve to a checkout
     echo "$REINS_HOME"                   # if set, it wins
 
 A dangling `core` link (checkout moved or deleted) is the usual cause;
@@ -84,7 +84,7 @@ is green, refreeze with `python3 scripts/selftest.py --regen` and commit
 the goldens alongside the fixtures. Never edit a golden by hand.
 
 ## Commands are missing or the wrong ones run
-Commands are `/pipeline-*` (D31). If an unprefixed `/work` or `/review`
+Commands are `/reins-*` (D31). If an unprefixed `/work` or `/review`
 still resolves, an install from before the rename left a stale link;
 re-running `install.sh` removes the ones pointing at a Reins checkout.
 Anything else answering to those names belongs to another tool.

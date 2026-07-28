@@ -12,8 +12,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact, cli, decisions as dec, telemetry as tele
-from pipeline.schemas import ALL_TELEMETRY_METRICS, CONTRACT_TELEMETRY
+from reins import artifact, cli, decisions as dec, telemetry as tele
+from reins.schemas import ALL_TELEMETRY_METRICS, CONTRACT_TELEMETRY
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())
@@ -271,6 +271,6 @@ def test_outcome_precedence_matches_frontier(task: Path):
     dec.append(task, dec.make("bypass", "2026-07-25T13:00:00Z",
                               request_hash=artifact.sha256(task / "request.md"),
                               reason="pathological double-terminal"))
-    from pipeline import frontier as fr
+    from reins import frontier as fr
     assert fr.frontier(task).status == "BYPASSED"
     assert tele.extract(task)["outcome"] == "bypassed"

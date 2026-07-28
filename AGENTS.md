@@ -15,7 +15,7 @@ Every agent session inherits these; they outrank session-level judgment:
 - The architecture is stable, not immutable (docs/governance.md).
 - Evidence precedes redesign. Small, evidence-backed improvements over
   architectural reinvention.
-- Deterministic derivation belongs in the product (pipeline/);
+- Deterministic derivation belongs in the product (reins/);
   orchestration belongs in the runtime (runtime/). The runtime never
   derives product state — it calls the core for facts.
 - Human approval is explicit; never record consent without an explicit
@@ -46,19 +46,19 @@ Every agent session inherits these; they outrank session-level judgment:
   derived from a real throwaway git repo.
 
 ## Pitfalls — what agents get wrong here
-- The core is invoked by path: `python3 ~/.claude/pipeline/core/pipeline_cli.py
-  <cmd>` (docs use `pipeline <cmd>` as shorthand). There is no installed
-  `pipeline` binary and nothing on PATH (D30); a dev checkout may use
-  `python3 -m pipeline.cli`.
+- The core is invoked by path: `python3 ~/.claude/reins/core/reins_cli.py
+  <cmd>` (docs use `reins <cmd>` as shorthand). There is no installed
+  `reins` binary and nothing on PATH (D30); a dev checkout may use
+  `python3 -m reins.cli`.
 - Never reintroduce PyYAML (or any dependency). Frontmatter/ledger/config
-  YAML is the `pipeline/miniyaml.py` restricted subset (D30); anything
+  YAML is the `reins/miniyaml.py` restricted subset (D30); anything
   outside it must fail loudly, not get a new parser feature by default.
 - Never hand-compute or retype artifact hashes or candidate bodies; use
-  `pipeline hash` / `pipeline frontmatter --pin` / mechanical extraction.
+  `reins hash` / `reins frontmatter --pin` / mechanical extraction.
 - Two reference identities, not interchangeable (D16): `sha256:<64 hex>` for
   content artifacts, `git:<object id>` for virtual ones. Never re-hash a git
   object id to make it look like a content hash.
-- Facts fed to `pipeline floor` / `floor-check` are the **source** change:
+- Facts fed to `reins floor` / `floor-check` are the **source** change:
   exclude `.dev/**` and `telemetry.jsonl`, or task bookkeeping pushes every
   task to `full`.
 - `consumes_alt` is a compatibility mechanism, not a second pipeline. The
@@ -69,7 +69,7 @@ Every agent session inherits these; they outrank session-level judgment:
 - A nonzero exit is often a status, not a failure: `status`/`next` exit 3
   at a consent gate by contract (docs/cli.md, D29). Branch on the code or
   parse `--json`; never chain them with `&&` or run them under `set -e`.
-- Write the artifact body first, then `pipeline frontmatter … --init` to
+- Write the artifact body first, then `reins frontmatter … --init` to
   create the fence and pin (D28). Never hand-write a fence or a hash.
 - The test-count badge and docs counts are static; sync them when the
   suite grows: README badge, AGENTS.md, docs/architecture.md,

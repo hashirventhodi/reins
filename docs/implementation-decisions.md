@@ -844,3 +844,37 @@ so it isn't re-litigated without new grounding."
   append-only, and the useful record here is that a distribution
   assumption was taken from documentation and disproved by a five-minute
   experiment.
+
+## D35 — one name: /reins-* everywhere (Tier 0, runtime + packaging)
+
+- **Problem:** D32 kept `/pipeline-*` commands and `~/.claude/pipeline/`
+  paths on the theory that "pipeline" named the *concept* while Reins
+  named the *project*. The first real usability test refuted it: the
+  author typed `/reins`, saw only the installer skill, and concluded the
+  twelve commands had not been installed. They had. The distinction was
+  legible in the decision log and invisible at the prompt.
+- **Why:** command discovery is prefix-driven — a user who knows the
+  product name types it and expects to find its verbs. Splitting the
+  namespace meant the one string a user reliably knows (`reins`, the
+  thing they installed) returned almost nothing. Friction is product
+  feedback, not user error, so this is evidence and not taste. Choosing
+  the *project* name over the *concept* name also collapses three
+  spellings into one: repo, env var (`$REINS_HOME`), commands, install
+  path and entry point now agree.
+- **Smallest change:** rename in place — `pipeline/` -> `reins/`,
+  `pipeline_cli.py` -> `reins_cli.py`, the twelve commands to
+  `/reins-*`, and the install directory to `~/.claude/reins/`
+  (`core`, `contracts`). `install.sh` now removes command links from
+  *both* earlier namings, plus the superseded `~/.claude/pipeline/`
+  directory, so upgrading leaves nothing shadowing. Docs use `reins
+  <cmd>` as the shorthand for the by-path invocation.
+- **What deliberately did NOT change:** the artifact frontmatter key
+  `pipeline:` and `PIPELINE_VERSION`. Those are the on-disk *format*,
+  not a name in the UI; renaming them would invalidate every existing
+  artifact and force a version bump for cosmetics. Verified by
+  regenerating the fixtures and getting a byte-identical tree.
+- **Why not architectural:** no logic moved and no interface changed
+  shape; 340 tests and the selftest pass unchanged, and the fixtures are
+  byte-identical. Recorded because D32's reasoning was explicit and is
+  now explicitly overturned — by use, which is the standard this
+  repository says it holds itself to.

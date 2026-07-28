@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import cli, decisions as dec, floor as fl
-from pipeline.schemas import LANES
+from reins import cli, decisions as dec, floor as fl
+from reins.schemas import LANES
 
 POLICY = {
     "governed_paths": ["auth/**", "migrations/**", "*.toml", ".dev/config.yaml"],
@@ -211,8 +211,8 @@ def test_shipped_policy_governs_at_any_depth(path: str):
     nothing is worse than no policy, because it looks like a control while
     granting the cheap lane to (say) a session-token change. This is the
     fail-safe direction the floor exists to protect, so it is pinned."""
-    from pipeline import miniyaml
-    from pipeline.cli import DEFAULT_CONFIG
+    from reins import miniyaml
+    from reins.cli import DEFAULT_CONFIG
     policy = miniyaml.loads(DEFAULT_CONFIG)["floor"]
     assert any(fl.matches(path, g) for g in policy["governed_paths"]), path
     assert fl.compute(facts([path], 1), policy)["floor"] == "full"
@@ -220,8 +220,8 @@ def test_shipped_policy_governs_at_any_depth(path: str):
 
 def test_shipped_policy_still_lets_ordinary_source_through():
     """The counterweight: if everything is governed, express is inert."""
-    from pipeline import miniyaml
-    from pipeline.cli import DEFAULT_CONFIG
+    from reins import miniyaml
+    from reins.cli import DEFAULT_CONFIG
     policy = miniyaml.loads(DEFAULT_CONFIG)["floor"]
     for path in ("src/api/retry.py", "lib/format.ts", "docs/notes.md",
                  "tests/test_retry.py"):

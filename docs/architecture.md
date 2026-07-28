@@ -4,7 +4,7 @@ The module-level truth the README links to instead of embedding.
 
 ## Product / runtime boundary (D9)
 
-The product is `pipeline/` + `pipeline_cli.py` + `contracts/` +
+The product is `reins/` + `reins_cli.py` + `contracts/` +
 `scripts/` + `tests/`. Everything under
 `runtime/` is a consumer. Dependency direction is one-way — runtime files
 reference contract texts and shell out to the core; nothing in the product
@@ -15,7 +15,7 @@ The product exports exactly two stable interfaces — both aimed at
 runtime authors, not end users (the end-user surface is the runtime's
 slash commands):
 
-1. the deterministic core (`pipeline_cli.py`, invoked by path — D30)
+1. the deterministic core (`reins_cli.py`, invoked by path — D30)
    — see docs/cli.md
 2. the canonical contract texts (`contracts/*.md`)
 
@@ -46,47 +46,47 @@ staleness propagates transitively.
 
 ## Modules
 
-- `pipeline/schemas.py` — artifact/contract registry, closed enums,
+- `reins/schemas.py` — artifact/contract registry, closed enums,
   telemetry metric registry (data, not logic). `_check_registry()` enforces
   graph invariants at import time: one producer per artifact, no orphans,
   valid consume edges, exactly one root (request) and one terminal
   (review), full reachability, acyclicity.
-- `pipeline/artifact.py` — parse/serialize/hash. Bodies round-trip
+- `reins/artifact.py` — parse/serialize/hash. Bodies round-trip
   byte-identically; hashing is over exact file bytes; fence-aware section
   splitting; typed all-or-nothing parse errors.
-- `pipeline/miniyaml.py` — the restricted YAML subset the artifacts
+- `reins/miniyaml.py` — the restricted YAML subset the artifacts
   actually use, replacing PyYAML so the product has zero dependencies
   (D30). Parses block/flow mappings and sequences, quoted and plain
   scalars, comments and folded continuation lines; anything outside the
   subset raises typed with a line number. Timestamps and floats stay
   plain strings — the deliberate divergence that retires the D26 bug
   class at the parser.
-- `pipeline/validate.py` — the type system. 24 rules with stable IDs,
+- `reins/validate.py` — the type system. 24 rules with stable IDs,
   exhaustive passing+failing fixture coverage (meta-tested), transitive
   staleness, purity (byte-snapshot tested).
-  Also runnable directly: `python3 -m pipeline.validate <task_dir>`.
-- `pipeline/decisions.py` — append-only log of the only stored state:
+  Also runnable directly: `python3 -m reins.validate <task_dir>`.
+- `reins/decisions.py` — append-only log of the only stored state:
   consents (hash-pinned), bypass, escalations, routing, merge. Strict
   append, tolerant read.
-- `pipeline/frontier.py` — status as a pure deterministic function of
+- `reins/frontier.py` — status as a pure deterministic function of
   (artifacts, decisions). See docs/state-machine.md for the normative
   status and precedence tables. The lane in force (from the latest
   `disposition`, defaulting to `full`) selects which artifacts the chain
   walk requires; it parameterises the walk rather than forking it.
-- `pipeline/floor.py` — the minimum process a change deserves: a pure
+- `reins/floor.py` — the minimum process a change deserves: a pure
   function of (runtime-supplied facts, repo policy), fail-safe in one
   direction only, so every unknown yields `full`. Knows nothing of git.
-- `pipeline/telemetry.py` — pure projection of each contract's declared
+- `reins/telemetry.py` — pure projection of each contract's declared
   telemetry questions; idempotent on (task, outcome); records contain no
   wall-clock values and are golden-tested byte-for-byte.
-- `pipeline/cli.py` — thin wrapper. Exit codes: 0 ok / 1 usage /
+- `reins/cli.py` — thin wrapper. Exit codes: 0 ok / 1 usage /
   2 invalid / 3 needs-human.
-- `pipeline_cli.py` (repo root) — the sole entry point. Self-locating via
+- `reins_cli.py` (repo root) — the sole entry point. Self-locating via
   `realpath(__file__)` and asserting the Python ≥ 3.9 floor before any
   import, so it runs from any cwd with no install, no PATH and no
   PYTHONPATH (D30).
 - `runtime/claude/` — the Claude Code binding: 5 contract skill shims,
-  12 `/pipeline-*` commands (`/pipeline-work` implements the normative
+  12 `/reins-*` commands (`/reins-work` implements the normative
   orchestration loop — the namespace is claimed deliberately, D31), the
   read-only reviewer agent, 3 hooks, `settings.example.json`.
 - `install.sh` (repo root) — the only supported install: symlinks the

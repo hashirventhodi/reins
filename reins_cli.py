@@ -3,7 +3,7 @@
 #
 # Invoked by path, never installed:
 #
-#     python3 ~/.claude/pipeline/core/pipeline_cli.py <subcommand> ...
+#     python3 ~/.claude/reins/core/reins_cli.py <subcommand> ...
 #
 # Self-locating: realpath resolves the ~/.claude symlink chain to the
 # real checkout, so the `pipeline` package is imported from its own repo
@@ -27,7 +27,7 @@ _HERE = os.path.dirname(os.path.realpath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
-from pipeline.cli import main  # noqa: E402
+from reins.cli import main  # noqa: E402
 
 if __name__ == "__main__":
     sys.exit(main())

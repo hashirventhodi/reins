@@ -1,11 +1,11 @@
 ---
-description: Run a task's verifications and record each result. Usage - /pipeline-verify <task-id>
+description: Run a task's verifications and record each result. Usage - /reins-verify <task-id>
 ---
 Task: $ARGUMENTS. Resolves UNVERIFIED, which is not a human stop. For each check
 the plan names — or, on the express lane, each check the request implies:
 1. Run it. Capture stdout+stderr to a file; never summarize or retype output.
 2. Record it:
-   `python3 ~/.claude/pipeline/core/pipeline_cli.py verify $ARGUMENTS --verifier <slug> --tool "<name version>"
+   `python3 ~/.claude/reins/core/reins_cli.py verify $ARGUMENTS --verifier <slug> --tool "<name version>"
     --predicate "<the claim tested>" --verdict pass|fail|inconclusive
     --tree-ref git:$(git rev-parse HEAD^{tree}) --evidence-file <path>
     [--standard-touched]`

@@ -6,7 +6,7 @@
       "Bash(git reset --hard*)"
     ],
     "allow": [
-      "Bash(python3 * pipeline_cli.py *)",
+      "Bash(python3 * reins_cli.py *)",
       "Bash(python3 -m pipeline.*)",
       "Bash(git diff*)", "Bash(git log*)", "Bash(git show*)", "Bash(git status*)"
     ]

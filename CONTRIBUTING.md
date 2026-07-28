@@ -9,7 +9,7 @@ Thanks for your interest. Two ground rules shape everything here:
    failure, or one concrete task where the current design got in the
    way. Elegance alone doesn't clear Tier 2.
 2. **The runtime orchestrates, never decides.** If your change adds logic
-   to `runtime/`, ask whether it belongs in `pipeline/` instead — CI will
+   to `runtime/`, ask whether it belongs in `reins/` instead — CI will
    ask regardless.
 
 ## High-value contributions
@@ -19,7 +19,7 @@ Thanks for your interest. Two ground rules shape everything here:
   public interfaces (the core's subcommands + contract texts). Add a
   `runtime/<name>/` dir; never import product internals as a library.
   Point `$REINS_HOME` at a checkout and invoke
-  `python3 "$REINS_HOME/pipeline_cli.py" <cmd>` — no install step exists
+  `python3 "$REINS_HOME/reins_cli.py" <cmd>` — no install step exists
   to depend on (D30).
 - **Telemetry from real usage** — anonymized `telemetry.jsonl` excerpts
   with observations, especially where a contract looks vestigial or
@@ -47,6 +47,6 @@ one will be asked for it.
 
 ## Style
 
-Python ≥ 3.9, stdlib only in `pipeline/` (audited by test; YAML is
-handled by the in-repo `pipeline/miniyaml.py` subset — D30). No new
+Python ≥ 3.9, stdlib only in `reins/` (audited by test; YAML is
+handled by the in-repo `reins/miniyaml.py` subset — D30). No new
 dependencies, period.

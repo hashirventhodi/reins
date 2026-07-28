@@ -5,7 +5,7 @@
 # the project's command if PIPELINE_POST_EDIT_CMD is set (per-stack; see
 # settings.example.json), else exits 0.
 # Invokes the core by path (D30): $REINS_HOME if set, else the
-# installed ~/.claude/pipeline/core symlink; falls back to module
+# installed ~/.claude/reins/core symlink; falls back to module
 # invocation for development checkouts.
 INPUT=$(cat)
 python3 - "$INPUT" << 'PYEOF'
@@ -16,11 +16,11 @@ m = re.search(r"(^|/)\.dev/tasks/([^/]+)/[^/]+\.md$", path)
 if m:
     task_id = m.group(2)
     core = os.environ.get("REINS_HOME") or os.path.expanduser(
-        "~/.claude/pipeline/core")
-    entry = os.path.join(core, "pipeline_cli.py")
+        "~/.claude/reins/core")
+    entry = os.path.join(core, "reins_cli.py")
     cmd = ([sys.executable, entry, "validate", task_id]
            if os.path.exists(entry)
-           else [sys.executable, "-m", "pipeline.cli", "validate", task_id])
+           else [sys.executable, "-m", "reins.cli", "validate", task_id])
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode == 2:
         try:

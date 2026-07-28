@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import cli, followups as fu
+from reins import cli, followups as fu
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())

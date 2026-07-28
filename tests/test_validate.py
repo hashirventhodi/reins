@@ -13,9 +13,9 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact, schemas, validate
-from pipeline.errors import SchemaError
-from pipeline.validate import FRESH, INVALID, MISSING, STALE
+from reins import artifact, schemas, validate
+from reins.errors import SchemaError
+from reins.validate import FRESH, INVALID, MISSING, STALE
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())

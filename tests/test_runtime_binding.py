@@ -146,14 +146,14 @@ def test_install_is_idempotent_and_links_everything(tmp_path: Path):
     for cmd in RUNTIME.joinpath("commands").glob("*.md"):
         assert (home / "commands" / cmd.name).exists()
     assert (home / "agents" / "reviewer.md").exists()
-    assert (home / "pipeline" / "contracts" / "planning.md").exists()
-    assert (home / "pipeline" / "core" / "pipeline_cli.py").exists()
+    assert (home / "reins" / "contracts" / "planning.md").exists()
+    assert (home / "reins" / "core" / "reins_cli.py").exists()
 
 
 # --- binding integrity -----------------------------------------------------
 
 def test_every_contract_has_a_skill_shim_and_vice_versa():
-    from pipeline.schemas import CONTRACTS
+    from reins.schemas import CONTRACTS
     shims = {p.name.removesuffix("-contract")
              for p in RUNTIME.joinpath("skills").iterdir()}
     assert shims == set(CONTRACTS)
@@ -163,17 +163,17 @@ def test_shims_reference_canonical_contracts_and_forbid_hand_hashes():
     for shim in RUNTIME.joinpath("skills").glob("*/SKILL.md"):
         text = shim.read_text()
         contract = shim.parent.name.removesuffix("-contract")
-        assert f"pipeline/contracts/{contract}.md" in text
+        assert f"reins/contracts/{contract}.md" in text
         assert (ROOT / "contracts" / f"{contract}.md").exists()
         assert "Never hand-write" in text
-        assert "pipeline_cli.py frontmatter" in text
+        assert "reins_cli.py frontmatter" in text
         assert len(text.splitlines()) <= 16   # shims stay thin
 
 
 def test_commands_stay_thin():
     """The guard is against the runtime reimplementing product logic, so it
 
-    stays tight for every command that wraps one contract. `pipeline-work.md` is the
+    stays tight for every command that wraps one contract. `reins-work.md` is the
     exception by nature: it is the normative loop, a dispatch table with one
     branch per status, and the state machine has 16 of them. Its own cap is
     higher but still bounded — the real guard against it growing logic is
@@ -181,19 +181,19 @@ def test_commands_stay_thin():
     delegates rather than derives."""
     for cmd in RUNTIME.joinpath("commands").glob("*.md"):
         body = cmd.read_text().split("---", 2)[2]
-        limit = 30 if cmd.name == "pipeline-work.md" else 22
+        limit = 30 if cmd.name == "reins-work.md" else 22
         assert len(body.strip().splitlines()) <= limit, cmd.name
 
 
 def test_work_command_encodes_the_normative_loop():
-    text = (RUNTIME / "commands" / "pipeline-work.md").read_text()
-    for required in ("pipeline_cli.py status", "pipeline_cli.py validate",
+    text = (RUNTIME / "commands" / "reins-work.md").read_text()
+    for required in ("reins_cli.py status", "reins_cli.py validate",
                      "2 correction",
                      "reviewer subagent", "consent", "--edited",
                      "Never compute status yourself",
-                     "/pipeline-dispose",          # the human chooses the lane
+                     "/reins-dispose",          # the human chooses the lane
                      "UNVERIFIED",        # D19, resolved mechanically
-                     "/pipeline-verify",
+                     "/reins-verify",
                      "floor-check"):      # D20, realized floor at the gate
         assert required in text, required
 
@@ -205,13 +205,13 @@ def test_runtime_gathers_source_facts_not_repository_facts():
     `git diff --name-only` counts .dev/ and telemetry.jsonl and pushes every
     task to `full`. Forgetting to filter fails safe — more process, never
     less — but the instruction has to exist somewhere, and here is where."""
-    dispose = (RUNTIME / "commands" / "pipeline-dispose.md").read_text()
+    dispose = (RUNTIME / "commands" / "reins-dispose.md").read_text()
     assert ".dev/**" in dispose and "telemetry.jsonl" in dispose
     assert "SOURCE change only" in dispose
-    assert "pipeline_cli.py floor" in dispose
+    assert "reins_cli.py floor" in dispose
     # the gate re-checks against the same filtered set
-    assert "filtered as in /pipeline-dispose" in (
-        RUNTIME / "commands" / "pipeline-work.md").read_text()
+    assert "filtered as in /reins-dispose" in (
+        RUNTIME / "commands" / "reins-work.md").read_text()
 
 
 def test_gates_are_presented_one_at_a_time():
@@ -219,7 +219,7 @@ def test_gates_are_presented_one_at_a_time():
 
     which is what gate 1 exists to prevent. The express lane, not batching,
     is how the stop count comes down."""
-    text = (RUNTIME / "commands" / "pipeline-work.md").read_text()
+    text = (RUNTIME / "commands" / "reins-work.md").read_text()
     assert "one at a time" in text and "anchors" in text
 
 
@@ -238,14 +238,14 @@ def test_the_agent_never_decides_its_own_oversight():
     """The invariant Phase 0 established and D22 completed: an agent may
 
     propose how much process a task deserves, never record it. The intent
-    shim proposes and stops (asserted here because /pipeline-refine reaches it
-    directly), and /pipeline-work forbids recording any of it without an explicit
+    shim proposes and stops (asserted here because /reins-refine reaches it
+    directly), and /reins-work forbids recording any of it without an explicit
     human reply."""
     shim = (RUNTIME / "skills" / "intent-contract" / "SKILL.md").read_text()
     assert "PROPOSAL" in shim and "never self-recorded" in shim
-    assert "pipeline_cli.py decide disposition" in shim
+    assert "reins_cli.py decide disposition" in shim
     assert "decide bypass" not in shim      # retired (D22)
-    work = (RUNTIME / "commands" / "pipeline-work.md").read_text()
+    work = (RUNTIME / "commands" / "reins-work.md").read_text()
     assert ("never record a consent or a bypass without an explicit human "
             "reply in-session") in work
 
@@ -265,7 +265,7 @@ def test_product_never_references_runtime():
     (paths/imports), not prose mentions of the word 'runtime'."""
     forbidden = ("runtime/claude", "runtime.claude", "from runtime",
                  "import runtime")
-    for py in (ROOT / "pipeline").glob("*.py"):
+    for py in (ROOT / "reins").glob("*.py"):
         text = py.read_text()
         assert not any(f in text for f in forbidden), py.name
     for contract in (ROOT / "contracts").glob("*.md"):
@@ -279,9 +279,9 @@ def test_followups_command_respects_the_boundaries():
     deterministically; the runtime presents and relays explicit human
     selection, deriving nothing itself and touching no external
     trackers."""
-    text = (RUNTIME / "commands" / "pipeline-followups.md").read_text()
-    for required in ("pipeline_cli.py followups $ARGUMENTS --json",
-                     "never derive candidates", "pipeline_cli.py task add",
+    text = (RUNTIME / "commands" / "reins-followups.md").read_text()
+    for required in ("reins_cli.py followups $ARGUMENTS --json",
+                     "never derive candidates", "reins_cli.py task add",
                      "MECHANICALLY", "never retyped",
                      'followup:$ARGUMENTS', "explicit human",
                      "already_created", "Never create GitHub/Jira"):
@@ -307,7 +307,7 @@ def test_repo_root_is_the_distributable_skill():
     for scanned in ("skills", ".claude/skills", ".agents/skills"):
         assert not (ROOT / scanned).exists(), scanned
     # everything the payload must carry for the wiring to succeed
-    for needed in ("install.sh", "pipeline_cli.py", "pipeline", "contracts",
+    for needed in ("install.sh", "reins_cli.py", "reins", "contracts",
                    "runtime/claude/commands", "runtime/claude/agents",
                    "scripts/selftest.py", "tests/fixtures"):
         assert (ROOT / needed).exists(), needed

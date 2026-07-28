@@ -6,14 +6,14 @@ is created or modified; rollback is deletion.
 1. Prerequisite: install per docs/install.md.
 2. In the repo root:
 
-       python3 ~/.claude/pipeline/core/pipeline_cli.py init
+       python3 ~/.claude/reins/core/reins_cli.py init
                                   # creates .dev/tasks/, .dev/config.yaml,
                                   # telemetry.jsonl (empty)
        mkdir -p .claude/hooks
-       # ~/.claude/pipeline/core is created by install.sh and points at
+       # ~/.claude/reins/core is created by install.sh and points at
        # whichever checkout you installed from, so this works for both the
        # skills.sh and git-checkout installs. $REINS_HOME wins if set.
-       CORE="${REINS_HOME:-$HOME/.claude/pipeline/core}"
+       CORE="${REINS_HOME:-$HOME/.claude/reins/core}"
        cp "$CORE"/runtime/claude/hooks/*.sh .claude/hooks/
        cp "$CORE"/runtime/claude/settings.example.json .claude/settings.json
        printf '.claude/settings.local.json\n' >> .gitignore
@@ -25,9 +25,9 @@ is created or modified; rollback is deletion.
 
 4. AGENTS.md / CLAUDE.md are orthogonal to the pipeline and unchanged.
 5. In-flight work: finish current branches old-style; new tasks enter
-   via `/pipeline-task add`. No artifact back-fill, ever.
-6. First task — conversational, in Claude Code: `/pipeline-task add <what you
-   want>` then `/pipeline-work <id>`. (The deterministic core underneath is
+   via `/reins-task add`. No artifact back-fill, ever.
+6. First task — conversational, in Claude Code: `/reins-task add <what you
+   want>` then `/reins-work <id>`. (The deterministic core underneath is
    the API for runtime authors and no-AI use: docs/cli.md.)
 
 Prerequisite reminder: install Reins first (docs/install.md) — one

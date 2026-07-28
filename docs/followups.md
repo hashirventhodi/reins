@@ -18,8 +18,8 @@ The contracts already force follow-up material into four places:
 - `ledger.md` entries whose `plan_impact` defers work
 
 What the shipped feature adds is the **harvest step**. Harvesting is derivation, so it
-lives in the product (D14): `pipeline followups <id> --json` (shorthand
-for `python3 ~/.claude/pipeline/core/pipeline_cli.py followups …`) is a pure,
+lives in the product (D14): `reins followups <id> --json` (shorthand
+for `python3 ~/.claude/reins/core/reins_cli.py followups …`) is a pure,
 deterministic projection — chain order (intent, findings, ledger,
 review; document order within each), mechanical extraction rules
 (/defer/i non-goals; every out-of-scope observation; ledger entries with
@@ -27,8 +27,8 @@ plan_impact != none; should-fix/nit review findings), exact-normalized
 dedup (first occurrence wins, origins accumulate; deliberately no fuzzy
 matching), word-boundary titles (<=72 chars), verbatim bodies plus a
 fixed origin line, and `already_created` detection so re-runs never
-re-offer what exists. `/pipeline-followups <task-id>` presents that list and
-relays the human's explicit selection by invoking `pipeline task add`
+re-offer what exists. `/reins-followups <task-id>` presents that list and
+relays the human's explicit selection by invoking `reins task add`
 once per selected candidate — title/body extracted from the JSON
 mechanically (jq/python, never retyped; `creation_body()` is the
 normative byte spec), skipping `already_created` candidates, with the

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact, decisions as dec, frontier as fr
+from reins import artifact, decisions as dec, frontier as fr
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = next((ROOT / "tests" / "fixtures" / "happy").iterdir())

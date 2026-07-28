@@ -20,7 +20,7 @@ points for your approval. Everyday work takes the **express lane** — one
 stop, still reviewed and still verified — and which lane applies is computed
 from the change, not argued by the agent. Either way it leaves a reproducible
 evidence trail. Reins ships with a Claude Code runtime, so all of
-it is conversational: `/pipeline-task add`, `/pipeline-work`, done.
+it is conversational: `/reins-task add`, `/reins-work`, done.
 
 AI coding agents are great at writing code and terrible at accountability.
 They plan in their heads, drift from what you asked, review their own work,
@@ -72,7 +72,7 @@ the reviewer tests.
   upstream and everything downstream goes stale — transitively, automatically.
 - 🚦 **Three approval gates, zero babysitting.** Approval is pinned to the
   exact bytes you approved; editing an approved plan reopens the gate.
-  Between gates, `/pipeline-work` runs the whole loop.
+  Between gates, `/reins-work` runs the whole loop.
 - 🛑 **Escalation is compliance, not failure.** Five triggers (invalidated
   assumption, unplanned dependency, repeated verification failure, scope
   blow-up, checkpoint) *halt* execution and route backward — by contract.
@@ -105,7 +105,7 @@ skill, so this one command carries the whole system, not a stub (D34):
 $ npx skills add hashirventhodi/reins -g
 ```
 
-Then invoke `/reins` in your agent once. It wires the `/pipeline-*`
+Then invoke `/reins` in your agent once. It wires the `/reins-*`
 commands, the contract skills and the reviewer agent into `~/.claude`,
 and runs a stdlib-only selftest that proves the core derives
 deterministically on your machine.
@@ -123,25 +123,25 @@ $ python3 scripts/selftest.py
 In any repository, set it up once:
 
 ```console
-$ python3 ~/.claude/pipeline/core/pipeline_cli.py init
+$ python3 ~/.claude/reins/core/reins_cli.py init
 ```
 
 The bundled **Claude Code runtime** is what provides the slash commands —
-`/pipeline-task`, `/pipeline-work`, `/pipeline-status` — as thin bindings over the deterministic
+`/reins-task`, `/reins-work`, `/reins-status` — as thin bindings over the deterministic
 core. (Other agents can provide the same commands by implementing the
 [normative loop](docs/state-machine.md); Claude Code is simply the first
 runtime.) Then everything is conversational:
 
 ```text
-/pipeline-task add Add a request id header to every API response
-/pipeline-work T-2026-07-25-add-a-request-id-header
+/reins-task add Add a request id header to every API response
+/reins-work T-2026-07-25-add-a-request-id-header
 ```
 
-(`/pipeline-task add` prints the task ID — use the one it gives you.)
+(`/reins-task add` prints the task ID — use the one it gives you.)
 
-`/pipeline-work` runs contract to contract and stops only when it needs you: it
+`/reins-work` runs contract to contract and stops only when it needs you: it
 shows you the intent to confirm, the plan to approve, and reports when the
-task is ready to merge. Check in anytime with `/pipeline-status <task-id>`.
+task is ready to merge. Check in anytime with `/reins-status <task-id>`.
 
 Full setup: **[docs/install.md](docs/install.md)** ·
 Existing repos (10 min, fully reversible): **[docs/migration.md](docs/migration.md)**
@@ -149,11 +149,11 @@ Existing repos (10 min, fully reversible): **[docs/migration.md](docs/migration.
 ## What a task looks like
 
 <!-- demo.gif: recorded with `vhs demo.tape` (see assets/demo.tape) once
-     you have a real /pipeline-work run — do not fake this recording. Suggested
-     shots: /pipeline-task add -> /pipeline-work -> gate 2 approval -> review verdict ->
+     you have a real /reins-work run — do not fake this recording. Suggested
+     shots: /reins-task add -> /reins-work -> gate 2 approval -> review verdict ->
      telemetry line. -->
 
-`/pipeline-work` pauses at gate 2 and shows you the plan:
+`/reins-work` pauses at gate 2 and shows you the plan:
 
 > **Plan ready for approval** (gate 2 of 3) — objective, three steps each with
 > a `verify:` line, risks, out of scope. *Approve, edit, or send it back?*
@@ -165,7 +165,7 @@ true`): gates that get edited are gates that are working.
 
 Mid-implementation, the agent discovers it needs a dependency the plan
 never named. It doesn't improvise — trigger **E2** fires, execution halts,
-and `/pipeline-work` stops to ask you where to route it. After you merge the PR, CI
+and `/reins-work` stops to ask you where to route it. After you merge the PR, CI
 appends one reproducible record to `telemetry.jsonl`:
 
 ```json
@@ -181,7 +181,7 @@ appends one reproducible record to `telemetry.jsonl`:
 Under the slash commands sits the deterministic core — the API the
 runtime drives, and the reason none of this depends on any particular
 agent. It is a stdlib-only Python package invoked by path
-(`python3 ~/.claude/pipeline/core/pipeline_cli.py …`), never installed,
+(`python3 ~/.claude/reins/core/reins_cli.py …`), never installed,
 so there is no version of it to get wrong. A human can run every
 transition by hand (that's not a fallback; it's the model-independence
 proof, enforced by an end-to-end test where a shell script plays the

@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import miniyaml
-from pipeline.miniyaml import MiniYamlError
+from reins import miniyaml
+from reins.miniyaml import MiniYamlError
 
 ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = ROOT / "tests" / "fixtures"

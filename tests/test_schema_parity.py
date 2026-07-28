@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact, schemas
+from reins import artifact, schemas
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTRACTS_DIR = ROOT / "contracts"

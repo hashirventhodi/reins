@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from pipeline import artifact
-from pipeline.errors import ArtifactParseError, LedgerFormatError
+from reins import artifact
+from reins.errors import ArtifactParseError, LedgerFormatError
 
 ROOT = Path(__file__).resolve().parent.parent
 HAPPY = ROOT / "tests" / "fixtures" / "happy"
