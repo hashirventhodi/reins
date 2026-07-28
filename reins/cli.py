@@ -49,7 +49,7 @@ OK, USAGE, INVALID_STATE, NEEDS_HUMAN = 0, 1, 2, 3
 # like a control while granting the cheap lane to a session-token change.
 # `.github/**` and `.dev/config.yaml` stay root-anchored because that is
 # where they are actually required to live.
-DEFAULT_CONFIG = f"""# contract-pipeline project config
+DEFAULT_CONFIG = f"""# reins project config
 pipeline: {PIPELINE_VERSION}
 telemetry: telemetry.jsonl
 

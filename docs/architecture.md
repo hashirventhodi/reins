@@ -86,7 +86,7 @@ staleness propagates transitively.
   import, so it runs from any cwd with no install, no PATH and no
   PYTHONPATH (D30).
 - `runtime/claude/` — the Claude Code binding: 5 contract skill shims,
-  12 `/reins-*` commands (`/reins-work` implements the normative
+  13 `/reins-*` commands (`/reins-work` implements the normative
   orchestration loop — the namespace is claimed deliberately, D31), the
   read-only reviewer agent, 3 hooks, `settings.example.json`.
 - `install.sh` (repo root) — the only supported install: symlinks the

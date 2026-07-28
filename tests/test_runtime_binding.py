@@ -311,3 +311,18 @@ def test_repo_root_is_the_distributable_skill():
                    "runtime/claude/commands", "runtime/claude/agents",
                    "scripts/selftest.py", "tests/fixtures"):
         assert (ROOT / needed).exists(), needed
+
+
+def test_init_command_owns_per_repo_setup():
+    """D36: per-repo setup is a command, not a path a user types by hand.
+    It must do the whole of docs/migration.md §2, resolve the core the
+    same way the hooks do, and never overwrite what it finds."""
+    text = (RUNTIME / "commands" / "reins-init.md").read_text()
+    assert "reins_cli.py init" in text
+    assert 'REINS_HOME' in text and "reins/core" in text
+    for required in (".claude/hooks", "settings.example.json",
+                     ".gitignore", ".dev/config.yaml"):
+        assert required in text, required
+    # additive, never destructive: the guarantee that makes it safe to re-run
+    assert "never overwrite" in text.lower()
+    assert "STOP" in text          # existing settings.json is the human's

@@ -4,11 +4,16 @@ Reins is strictly additive. Nothing outside the paths listed in step 2
 is created or modified; rollback is deletion.
 
 1. Prerequisite: install per docs/install.md.
-2. In the repo root:
+2. In the repo root, run **`/reins-init`** (D36). It performs every step
+   below, skips anything already present, and never overwrites: creates
+   `.dev/tasks/`, `.dev/config.yaml` and `telemetry.jsonl`; copies the
+   hooks into `.claude/hooks/`; installs `settings.example.json` as
+   `.claude/settings.json` *only if absent*, otherwise stopping for you;
+   and adds `.claude/settings.local.json` to `.gitignore`.
+
+   By hand, if you prefer (or outside Claude Code):
 
        python3 ~/.claude/reins/core/reins_cli.py init
-                                  # creates .dev/tasks/, .dev/config.yaml,
-                                  # telemetry.jsonl (empty)
        mkdir -p .claude/hooks
        # ~/.claude/reins/core is created by install.sh and points at
        # whichever checkout you installed from, so this works for both the

@@ -49,9 +49,9 @@ completion.
 ## Verify
 
 The runtime surface, in Claude Code, inside any repo after
-`python3 ~/.claude/reins/core/reins_cli.py init`: `/reins-task`,
-`/reins-work` and `/reins-status` should be available, and
-`/reins-task add hello world` should print a task id.
+`/reins-init`: `/reins-task`, `/reins-work` and `/reins-status` should
+be available, and `/reins-task add hello world` should print a task
+id.
 
 The core itself:
 

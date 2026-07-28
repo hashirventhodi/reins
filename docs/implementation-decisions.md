@@ -878,3 +878,31 @@ so it isn't re-litigated without new grounding."
   byte-identical. Recorded because D32's reasoning was explicit and is
   now explicitly overturned — by use, which is the standard this
   repository says it holds itself to.
+
+## D36 — per-repo setup is a command: /reins-init (Tier 0, runtime only)
+
+- **Problem:** every step of the workflow was a slash command except the
+  *first* one a user ever performs. Preparing a repository meant typing
+  `python3 ~/.claude/reins/core/reins_cli.py init` — the longest, ugliest
+  string in the system — and then hand-executing five more steps from
+  docs/migration.md §2 (hooks, settings, .gitignore). Onboarding was the
+  one place the runtime made the human do the runtime's job.
+- **Why:** commands exist to spare the human the invocation, and nothing
+  about `init` made it a special case; it was simply never wrapped. The
+  raw path also leaks the install layout into a user's muscle memory,
+  which D30 spent effort making irrelevant. Wrapping it is a Tier 0
+  change (runtime prompts), and the wrapper is worth more than a
+  one-liner alias because the *real* unit of work is "prepare this
+  repository", which was six steps in a doc rather than one command.
+- **Smallest change:** `runtime/claude/commands/reins-init.md` performs
+  the whole of migration §2 — `init`, hooks into `.claude/hooks/`,
+  `settings.example.json` as `.claude/settings.json`, the `.gitignore`
+  line — resolving the core through `$REINS_HOME` exactly as the hooks
+  do. It is additive and idempotent: anything already present is skipped
+  and reported, and an existing `settings.json` stops the command rather
+  than being merged, because settings are the human's. Then it hands
+  back the two decisions only a human makes: the floor policy in
+  `.dev/config.yaml` and the per-stack `PIPELINE_POST_EDIT_CMD`.
+- **Why not architectural:** no product bytes; the command shells out to
+  the same `init` subcommand as before and derives nothing. The manual
+  sequence stays documented for non-Claude runtimes.

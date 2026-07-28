@@ -120,10 +120,11 @@ $ python3 scripts/selftest.py
 ```
 </details>
 
-In any repository, set it up once:
+In any repository, set it up once — one command, additive and
+idempotent:
 
-```console
-$ python3 ~/.claude/reins/core/reins_cli.py init
+```text
+/reins-init
 ```
 
 The bundled **Claude Code runtime** is what provides the slash commands —

@@ -16,7 +16,7 @@ commands or subagents. Run both from this skill's own directory (the
 directory containing this file), then report:
 
 1. `sh <skill-dir>/install.sh` — symlinks into `$CLAUDE_HOME` (default
-   `~/.claude`): the twelve `/reins-*` commands, the five contract
+   `~/.claude`): the thirteen `/reins-*` commands, the five contract
    skills, the reviewer agent, `reins/contracts`, and
    `reins/core` (which is how every command reaches the core:
    `python3 ~/.claude/reins/core/reins_cli.py <cmd>`).
@@ -25,8 +25,7 @@ directory containing this file), then report:
    `ok`.
 Then tell the human: the runtime is linked, selftest passed, and the
 workflow is `/reins-task add <title>` then `/reins-work <id>`,
-with `python3 ~/.claude/reins/core/reins_cli.py init` once per
-repository. In a non-Claude runtime, set `$REINS_HOME` to this
+with `/reins-init` once per repository. In a non-Claude runtime, set `$REINS_HOME` to this
 directory and invoke `python3 "$REINS_HOME/reins_cli.py" <cmd>`.
 
 Both steps are idempotent; re-run them to repair or update an install.
