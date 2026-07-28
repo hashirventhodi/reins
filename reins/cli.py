@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 from . import artifact as art
+from . import ids
 from . import miniyaml
 from . import decisions as dec
 from . import frontier as fr
@@ -53,6 +54,13 @@ DEFAULT_CONFIG = f"""# reins project config
 pipeline: {PIPELINE_VERSION}
 telemetry: telemetry.jsonl
 
+# Task id prefix (D38). Ids are `<NNN>-<slug>`: 001-add-a-request-id-header.
+# Set a project key for Jira-shaped ids — `task_key: API` gives API-001-...
+# Numbering is per key, so adopting one starts its own series; existing
+# tasks keep the ids they were given, because ids are hashed into the
+# artifact chain and can never be renumbered.
+# task_key: API
+
 # Minimum-process policy (D18). Facts come from the runtime; this is policy.
 # Patterns match at any depth: '**/auth/**' covers auth/ and src/auth/ alike.
 floor:
@@ -79,36 +87,99 @@ def _now() -> str:
     return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _slug(title: str) -> str:
-    s = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
-    return s[:40].rstrip("-") or "task"
+def _task_key(root: Path):
+    """The optional project key from `.dev/config.yaml` (`task_key:`).
+
+    None by default, giving `007-add-a-request-id-header` — the ADR and
+    Spec Kit shape. Setting `task_key: API` gives Jira-shaped ids,
+    `API-007-...`, and starts that key's own series (D38)."""
+    cfg = root / ".dev" / "config.yaml"
+    if not cfg.exists():
+        return None
+    try:
+        data = miniyaml.loads(cfg.read_text(encoding="utf-8")) or {}
+    except miniyaml.MiniYamlError:
+        return None
+    key = data.get("task_key") if isinstance(data, dict) else None
+    if isinstance(key, str) and key and ids.KEY_RE.match(key):
+        return key
+    return None
+
+
+def _task_names(root: Path):
+    base = root / TASKS_DIR
+    return sorted(p.name for p in base.iterdir() if p.is_dir()) \
+        if base.is_dir() else []
+
+
+def _request_body(path: Path) -> bytes | None:
+    """The verbatim body of a request.md, frontmatter stripped."""
+    raw = path.read_bytes()
+    if not raw.startswith(b"---\n"):
+        return None
+    end = raw.find(b"\n---\n", 3)
+    return None if end == -1 else raw[end + 5:]
+
+
+def _duplicate_request(root: Path, source_ref: str, body: bytes):
+    """An existing task with the same source and byte-identical body.
+
+    Descriptive ids used to make this free: the same title on the same
+    day collided, which backstopped duplicate follow-up creation. Numeric
+    ids never collide, so the guarantee is restored here — on content,
+    which catches duplicates the title-based check would have missed."""
+    base = root / TASKS_DIR
+    if not base.is_dir():
+        return None
+    for p in sorted(base.iterdir()):
+        req = p / "request.md"
+        if not (p.is_dir() and req.is_file()):
+            continue
+        try:
+            a = art.load(req)
+        except PipelineError:
+            continue
+        if a.frontmatter.get("source_ref") != source_ref:
+            continue
+        if _request_body(req) == body:
+            return p.name
+    return None
+
+
+def _task_title(task_dir: Path) -> str:
+    """The captured title, or '' for requests written before D38."""
+    req = task_dir / "request.md"
+    if not req.is_file():
+        return ""
+    try:
+        title = art.load(req).frontmatter.get("title")
+    except PipelineError:
+        return ""
+    return title if isinstance(title, str) else ""
 
 
 def _resolve_task(root: Path, ref: str) -> str:
-    """Resolve a task reference to exactly one task id (D37).
+    """Resolve a human's task reference to exactly one id (D37, D38).
 
-    Ids are descriptive on purpose — `.dev/tasks/` should read as a
-    ledger — but that makes them long to type, and the noisy part (the
-    date) comes first, so prefix matching would not help. An exact id
-    always wins; otherwise a case-insensitive substring must match
-    exactly one task. Ambiguity is an error listing the candidates,
-    never a guess: acting on the wrong task is the one outcome worth
-    more than the keystrokes saved."""
+    The matching policy lives in `ids.match`; this adds the filesystem
+    and the error messages. Ambiguity names every candidate with its
+    title, because with short ids the title is how a human tells them
+    apart."""
     base = root / TASKS_DIR
-    if not ref:
+    if not (ref or "").strip():
         raise PipelineError("empty task reference")
-    d = base / ref
-    if d.is_dir():
+    if (base / ref).is_dir():
         return ref
     if not base.is_dir():
         raise PipelineError(f"no tasks directory: {base} (run init first)")
-    tasks = sorted(p.name for p in base.iterdir() if p.is_dir())
-    hits = [t for t in tasks if ref.lower() in t.lower()]
+    entries = [(name, _task_title(base / name)) for name in _task_names(root)]
+    hits = ids.match(ref, entries)
     if len(hits) == 1:
         return hits[0]
     if not hits:
         raise PipelineError(f"no such task: {ref} (looked in {base})")
-    listing = "\n  ".join(hits)
+    titles = dict(entries)
+    listing = "\n  ".join(f"{h:<28} {titles.get(h, '')}".rstrip() for h in hits)
     raise PipelineError(
         f"ambiguous task reference {ref!r} — {len(hits)} tasks match:\n"
         f"  {listing}\nuse a longer fragment or the full id")
@@ -147,17 +218,24 @@ def cmd_task_add(args) -> int:
         body = Path(args.body_file).read_bytes()   # byte-exact (M5-A: verbatim)
     else:
         body = sys.stdin.buffer.read()
-    date = _now()[:10]
-    task_id = f"T-{date}-{_slug(args.title)}"
+    dup = _duplicate_request(root, args.source_ref, body)
+    if dup is not None:
+        print(f"duplicate request: an identical body from source-ref "
+              f"{args.source_ref!r} is already captured as {dup}; "
+              "nothing added", file=sys.stderr)
+        return USAGE
+    task_id = ids.allocate(args.title, _task_names(root),
+                           key=_task_key(root))
     d = root / TASKS_DIR / task_id
     if d.exists():
-        print(f"task id collision: {task_id} already exists "
-              "(same slug, same day — pick a more specific title)",
-              file=sys.stderr)
+        print(f"task id collision: {task_id} already exists", file=sys.stderr)
         return USAGE
     d.mkdir(parents=True)
-    fm = (f"---\ntask: {task_id}\nsource_ref: {args.source_ref}\n"
-          f"created_at: {_now()}\n---\n").encode("utf-8")
+    # miniyaml quotes whatever needs it, so a title with a colon is safe
+    fm = ("---\n" + miniyaml.dumps({
+        "task": task_id, "title": args.title,
+        "source_ref": args.source_ref, "created_at": _now(),
+    }) + "---\n").encode("utf-8")
     (d / "request.md").write_bytes(fm + body)
     print(task_id)
     return OK
@@ -169,14 +247,26 @@ def cmd_task_list(args) -> int:
     rows = []
     for d in sorted(p for p in base.iterdir() if p.is_dir()) if base.is_dir() else []:
         f = fr.frontier(d)
-        rows.append({"task": f.task, "status": f.status,
-                     "next_contract": f.next_contract})
+        rows.append({"task": f.task, "title": _task_title(d),
+                     "status": f.status, "next_contract": f.next_contract})
     if args.json:
         print(json.dumps(rows, indent=2, sort_keys=True))
-    else:
-        for r in rows:
-            print(f"{r['task']:<44} {r['status']:<24} "
-                  f"next={r['next_contract'] or '-'}")
+        return OK
+    # Ids vary in width, so the columns are measured, not guessed.
+    dupes = ids.duplicate_numbers([r["task"] for r in rows], _task_key(root))
+    clashing = {t for names in dupes.values() for t in names}
+    width = max((len(r["task"]) for r in rows), default=0)
+    for r in rows:
+        mark = " !" if r["task"] in clashing else "  "
+        print(f"{r['task']:<{width}}{mark} {r['status']:<24} "
+              f"next={r['next_contract'] or '-':<10} {r['title']}".rstrip())
+    if dupes:
+        # Two branches allocated the same number and were merged. Benign
+        # for the chain — ids stay unique — but a human should see it,
+        # and short references to that number are now ambiguous.
+        for number, names in dupes.items():
+            print(f"! number {number} is claimed by {len(names)} tasks: "
+                  f"{', '.join(names)}", file=sys.stderr)
     return OK
 
 

@@ -99,10 +99,10 @@ def test_not_extractable_before_merge(tmp_path: Path):
 
 
 def test_bypassed_task_extracts_with_nulls(tmp_path: Path):
-    d = tmp_path / "T-2026-07-25-tiny"
+    d = tmp_path / "001-tiny"
     d.mkdir()
     (d / "request.md").write_text(
-        "---\ntask: T-2026-07-25-tiny\nsource_ref: local\n"
+        "---\ntask: 001-tiny\nsource_ref: local\n"
         "created_at: 2026-07-25T09:00:00Z\n---\nFix a typo.\n")
     dec.append(d, dec.make("bypass", "2026-07-25T09:01:00Z",
                            request_hash=artifact.sha256(d / "request.md"),
@@ -191,10 +191,10 @@ def test_verifications_projection_is_always_computable(tmp_path: Path):
 
     verified" is a claim worth recording, and count 0 states it. Contrast
     _ledger_entries, which is artifact-derived and None when absent."""
-    d = tmp_path / "T-2026-07-25-tiny"
+    d = tmp_path / "001-tiny"
     d.mkdir()
     (d / "request.md").write_text(
-        "---\ntask: T-2026-07-25-tiny\nsource_ref: local\n"
+        "---\ntask: 001-tiny\nsource_ref: local\n"
         "created_at: 2026-07-25T09:00:00Z\n---\nFix a typo.\n")
     dec.append(d, dec.make("merged", "2026-07-25T09:30:00Z", commit="c0ffee"))
     assert tele.extract(d)["verifications"] == {

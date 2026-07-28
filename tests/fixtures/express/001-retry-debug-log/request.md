@@ -1,5 +1,6 @@
 ---
-task: T-2026-07-25-retry-debug-log
+task: 001-retry-debug-log
+title: Log when the retry loop gives up
 source_ref: local
 created_at: 2026-07-25T09:00:00Z
 ---

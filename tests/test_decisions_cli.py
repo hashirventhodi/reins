@@ -130,13 +130,40 @@ def test_task_add_is_byte_exact(repo: Path, capsys):
     assert a.frontmatter["task"] == task_id
 
 
-def test_task_add_collision(repo: Path, capsys):
-    assert run("--root", str(repo), "task", "add", "--title", "same title",
-               "--body", "x") == 0
+def test_reusing_a_title_is_fine_now_that_ids_are_numbered(repo: Path):
+    """Titles stopped being identity in D38, so the same title twice is
+    two ordinary tasks — the old same-slug-same-day collision is gone."""
+    ids_seen = []
+    for body in ("x", "y"):
+        out = io.StringIO()
+        with redirect_stdout(out):
+            assert run("--root", str(repo), "task", "add",
+                       "--title", "same title", "--body", body) == 0
+        ids_seen.append(out.getvalue().strip())
+    assert ids_seen == ["001-same-title", "002-same-title"]
+
+
+def test_identical_request_from_the_same_source_is_refused(repo: Path, capsys):
+    """The duplicate guard that same-slug collision used to provide by
+    accident (D38): same source_ref plus a byte-identical body is a
+    re-capture, not a second task. It is what keeps a misbehaving
+    runtime from creating a follow-up twice."""
+    assert run("--root", str(repo), "task", "add", "--title", "first",
+               "--body", "identical body", "--source-ref", "gh:7") == 0
     capsys.readouterr()
-    assert run("--root", str(repo), "task", "add", "--title", "same title",
-               "--body", "y") == 1
-    assert "collision" in capsys.readouterr().err
+    assert run("--root", str(repo), "task", "add", "--title", "different title",
+               "--body", "identical body", "--source-ref", "gh:7") == 1
+    err = capsys.readouterr().err
+    assert "duplicate request" in err and "001-first" in err
+
+
+def test_same_body_from_a_different_source_is_a_real_task(repo: Path):
+    """The guard keys on (source, body): the same text arriving from a
+    different source is a different request, not a duplicate."""
+    assert run("--root", str(repo), "task", "add", "--title", "a",
+               "--body", "shared text", "--source-ref", "gh:7") == 0
+    assert run("--root", str(repo), "task", "add", "--title", "b",
+               "--body", "shared text", "--source-ref", "gh:9") == 0
 
 
 def test_usage_exit_code():
@@ -383,7 +410,7 @@ def _seed_tasks(tmp_path, titles):
         out = io.StringIO()
         with redirect_stdout(out):
             assert run("--root", str(tmp_path), "task", "add", "--title", t,
-                       "--body", "b") == 0
+                       "--body", f"body of {t}") == 0
         ids.append(out.getvalue().strip())
     return ids
 

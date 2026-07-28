@@ -1,15 +1,15 @@
 ---
 pipeline: 1
 contract: review
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
 produced_at: 2026-07-25T09:55:00Z
 consumes:
 - artifact: intent
-  hash: sha256:3572fb1e77fcada4dd818311dde7d74c63845b0628166a4c0ba463002c24024a
+  hash: sha256:35fdc028aa6ea0304255fac14ab6df9df3e23b7546b7c88e965e45efcda39de3
 - artifact: plan
-  hash: sha256:72a99186a4e7be16045d6c8d4c75597b43c846450ee30d40d5bcd8dd496b741e
+  hash: sha256:4703b3bd220f387dba0a45e53c15fbfe7934d6c15326287f57f1ff0877522825
 - artifact: ledger
-  hash: sha256:acbc5b0ee82c575a5bb313459789e3833e05fe0fbafee141ec717e455c70b68e
+  hash: sha256:1b14864b21b3e3b5be928caaa2090d1c92d4064c027e87c1994644fda32642a4
 - artifact: diff
   hash: git:263e2221f7ddde8b9f9f0138762de1d116b4d8c0
 ---

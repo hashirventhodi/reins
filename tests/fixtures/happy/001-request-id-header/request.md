@@ -1,5 +1,6 @@
 ---
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
+title: Add a request id header to every API response
 source_ref: local
 created_at: 2026-07-25T09:00:00Z
 ---

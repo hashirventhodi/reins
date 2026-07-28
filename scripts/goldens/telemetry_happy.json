@@ -24,7 +24,7 @@
   "pipeline": 1,
   "plan_edited_at_gate": true,
   "self_corrections": null,
-  "task": "T-2026-07-25-request-id-header",
+  "task": "001-request-id-header",
   "task_ref": "local",
   "undeclared_deviations_found": false,
   "verdict_sequence": [

@@ -1,13 +1,13 @@
 ---
 pipeline: 1
 contract: review
-task: T-2026-07-25-retry-debug-log
+task: 001-retry-debug-log
 produced_at: 2026-07-25T09:20:00Z
 consumes:
 - artifact: request
-  hash: sha256:43d5a4d203d043759c40193ffb484adc5b95fcf51050be1760088efa73a666d8
+  hash: sha256:0e051c02c3eb9e79a2634ec718b26e0c32e06f93e4ba04f142a42397dac155d6
 - artifact: ledger
-  hash: sha256:bec7b4f3e0c48256021e487f9f355a6234d4f53c4d8887ded0a43d5731345e25
+  hash: sha256:96981fdaf5418b6f6674494165ad523daf030d152567f5b1069115c647e523a6
 - artifact: diff
   hash: git:88500ab5ed2cc0a5a27cfeb8e33c15d69b758dbc
 ---

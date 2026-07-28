@@ -1,11 +1,11 @@
 ---
 pipeline: 1
 contract: intent
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
 produced_at: 2026-07-25T09:05:00Z
 consumes:
 - artifact: request
-  hash: sha256:670de3bce842994df4985d0cb623032589f234436782139368ea455b05f284a5
+  hash: sha256:066c768145ac8ee82d066eec752b2ce12f09ef1c5987f993fccc1cd4c9b450e1
 ---
 # Intent — request id tracing
 

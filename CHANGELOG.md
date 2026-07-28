@@ -5,7 +5,14 @@
 - `/reins-init` (D36) does the whole per-repo setup — task store, floor
   policy, hooks, settings, .gitignore — additively and idempotently,
   replacing six manual steps.
-- Task arguments accept any unambiguous fragment of an id (D37):
+- Task ids are now `<NNN>-<slug>` (D38) — `001-add-a-request-id-header` —
+  allocated sequentially per repository, never reused, and optionally
+  Jira-shaped via `task_key: API`. Identity moved into a dedicated
+  `reins/ids.py`. `request.md` gained `title:`. Duplicate follow-up
+  creation is now backstopped on content (same source + identical body)
+  rather than on title collision.
+- Task arguments accept the number, the id, or any unambiguous fragment
+  of id or title (D37, extended by D38):
   `/reins-work request-id` instead of the full
   `T-2026-07-28-add-a-request-id-header-…`. Ambiguity lists candidates
   rather than guessing; exact ids always win.

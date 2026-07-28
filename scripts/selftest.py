@@ -28,8 +28,8 @@ from reins.errors import PipelineError  # noqa: E402
 
 GOLDENS = os.path.join(ROOT, "scripts", "goldens")
 FIXTURES = os.path.join(ROOT, "tests", "fixtures")
-HAPPY = os.path.join(FIXTURES, "happy", "T-2026-07-25-request-id-header")
-EXPRESS = os.path.join(FIXTURES, "express", "T-2026-07-25-retry-debug-log")
+HAPPY = os.path.join(FIXTURES, "happy", "001-request-id-header")
+EXPRESS = os.path.join(FIXTURES, "express", "001-retry-debug-log")
 
 _failures = []
 

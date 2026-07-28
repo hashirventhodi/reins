@@ -145,20 +145,23 @@ def test_runtime_creation_flow_yields_lineage_and_already_created(repo, capsys):
     assert cand2["already_created"] == child_id    # re-harvest sees the child
 
 
-def test_slug_collision_backstops_duplicate_creation(repo, capsys):
+def test_duplicate_request_backstops_duplicate_creation(repo, capsys):
     """Runtime-side skip is the primary duplicate guard (already_created
+    in the JSON); a byte-identical body from the same source_ref is the
+    deterministic backstop if a runtime misbehaves.
 
-    in the JSON); the same-day title slug collision in task add is the
-    deterministic backstop if a runtime misbehaves."""
+    Before D38 this fell out of same-day slug collision, which numbered
+    ids removed. Keying on content instead is strictly stronger: it also
+    catches a runtime that re-words the title."""
     create_via_runtime_flow(repo, capsys, 2)
     cand = fu.harvest(repo / ".dev" / "tasks" / HAPPY.name)["candidates"][1]
     body_file = repo / "dup.md"
     body_file.write_text(fu.creation_body(cand, HAPPY.name))
     assert cli.main(["--root", str(repo), "task", "add",
-                     "--title", cand["title"],
+                     "--title", "a completely different wording",
                      "--body-file", str(body_file),
                      "--source-ref", f"followup:{HAPPY.name}"]) == 1
-    assert "collision" in capsys.readouterr().err
+    assert "duplicate request" in capsys.readouterr().err
 
 
 def test_followup_child_flows_into_telemetry_lineage(repo: Path, capsys):

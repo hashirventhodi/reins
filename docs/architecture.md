@@ -54,6 +54,12 @@ staleness propagates transitively.
 - `reins/artifact.py` — parse/serialize/hash. Bodies round-trip
   byte-identically; hashing is over exact file bytes; fence-aware section
   splitting; typed all-or-nothing parse errors.
+- `reins/ids.py` — task identity as pure functions (D38): slug
+  generation, `<NNN>-<slug>` parsing, sequential allocation derived from
+  the directory, duplicate-number detection, and the reference-matching
+  policy. Ids are immutable by construction — they are hashed into the
+  chain — so allocation never reuses a number and no renumber operation
+  exists.
 - `reins/miniyaml.py` — the restricted YAML subset the artifacts
   actually use, replacing PyYAML so the product has zero dependencies
   (D30). Parses block/flow mappings and sequences, quoted and plain
@@ -124,7 +130,7 @@ staleness propagates transitively.
 Fixtures are generated (`scripts/regen_fixtures.py`), never hand-written,
 so every pinned hash is real. Two acceptances, deliberately different:
 
-- `python3 -m pytest -q` — 345 tests, the *development* acceptance.
+- `python3 -m pytest -q` — 383 tests, the *development* acceptance.
 - `python3 scripts/selftest.py` — the *deployment* acceptance (D30):
   stdlib only, no pytest, self-locating, and runnable on any fresh
   install. It re-derives every fixture pin from first principles and

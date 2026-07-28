@@ -1,13 +1,13 @@
 ---
 pipeline: 1
 contract: planning
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
 produced_at: 2026-07-25T09:20:00Z
 consumes:
 - artifact: intent
-  hash: sha256:3572fb1e77fcada4dd818311dde7d74c63845b0628166a4c0ba463002c24024a
+  hash: sha256:35fdc028aa6ea0304255fac14ab6df9df3e23b7546b7c88e965e45efcda39de3
 - artifact: findings
-  hash: sha256:c675127f128900cc9fbaf51a790fc277b8a5525660b60e3d2ab6e553abdafafe
+  hash: sha256:168c4dda0e127db63eaa000e27bbe25f2fe08f8581694f759500f4acba6b6366
 ---
 # Plan — request id tracing
 

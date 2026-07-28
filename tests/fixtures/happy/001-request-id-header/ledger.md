@@ -1,11 +1,11 @@
 ---
 pipeline: 1
 contract: execution
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
 produced_at: 2026-07-25T09:41:00Z
 consumes:
 - artifact: plan
-  hash: sha256:72a99186a4e7be16045d6c8d4c75597b43c846450ee30d40d5bcd8dd496b741e
+  hash: sha256:4703b3bd220f387dba0a45e53c15fbfe7934d6c15326287f57f1ff0877522825
 ---
 # Deviation ledger — request id tracing
 

@@ -20,14 +20,14 @@ sys.path.insert(0, str(ROOT))
 from reins.artifact import sha256, sha256_bytes  # noqa: E402
 from reins.schemas import GIT_REF_PREFIX, PIPELINE_VERSION  # noqa: E402
 
-TASK = "T-2026-07-25-request-id-header"
+TASK = "001-request-id-header"
 DIR = ROOT / "tests" / "fixtures" / "happy" / TASK
 T0 = "2026-07-25T09:00:00Z"
 
 # The express-lane fixture lives in its own top-level directory: several
 # test modules take `next(happy.iterdir())`, so a second task under happy/
 # would make which fixture they load depend on filesystem order.
-EXPRESS_TASK = "T-2026-07-25-retry-debug-log"
+EXPRESS_TASK = "001-retry-debug-log"
 EXPRESS_DIR = ROOT / "tests" / "fixtures" / "express" / EXPRESS_TASK
 
 
@@ -87,6 +87,7 @@ def main() -> None:
         "request.md",
         f"""---
 task: {TASK}
+title: Add a request id header to every API response
 source_ref: local
 created_at: {T0}
 ---
@@ -322,6 +323,7 @@ def express() -> None:
 
     request = write("request.md", f"""---
 task: {EXPRESS_TASK}
+title: Log when the retry loop gives up
 source_ref: local
 created_at: {T0}
 ---

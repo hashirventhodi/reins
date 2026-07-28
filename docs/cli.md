@@ -21,14 +21,28 @@ from the repo root.
 Global flag: `--root PATH` (default `.`) points every command at another
 repository root.
 
-**Task references (D37).** Anywhere a command takes `<id>`, any
-unambiguous fragment of the id works — ids are descriptive, so
-`reins status request-id` beats retyping
-`T-2026-07-28-add-a-request-id-header-to-every-api-res`. An exact id
-always wins; otherwise a case-insensitive substring must match exactly
-one task. If it matches several the command refuses and lists them,
-because acting on the wrong task costs more than the keystrokes
-saved.
+**Task ids (D38).** `<NNN>-<slug>` — `007-add-a-request-id-header` —
+the shape ADRs, Django migrations and Spec Kit all converged on: the
+number is short enough to type, the slug keeps `.dev/tasks/` readable.
+Numbers are sequential per repository, derived from the directory (no
+counter file to conflict), and **never reused** — an id is hashed into
+the artifact chain, so it can never be renumbered. Set `task_key: API`
+in `.dev/config.yaml` for Jira-shaped ids (`API-007-...`); that starts
+its own series.
+
+**Task references (D37, D38).** Anywhere a command takes `<id>`, you may
+give: the exact id, the bare number (`7` finds `007`), or a
+case-insensitive fragment of the id *or the title*. So all of
+`reins status 7`, `status 007` and `status request-id` reach the same
+task. An exact id always wins. If a reference matches several tasks the
+command refuses and lists them with their titles, because acting on the
+wrong task costs more than the keystrokes saved.
+
+If two branches allocate the same number and are later merged, both
+tasks keep their distinct ids and remain individually addressable;
+`task list` marks the clash with `!` and warns on stderr, and short
+references to that number become ambiguous until you use a longer
+fragment.
 
 Audiences:
 - **Runtime authors** — implement the normative loop

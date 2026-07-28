@@ -936,3 +936,53 @@ so it isn't re-litigated without new grounding."
 - **Why not architectural:** additive resolution at the CLI boundary. No
   artifact, schema, status, decision type or telemetry field changes;
   ids on disk are untouched, so no PIPELINE_VERSION bump.
+
+## D38 — task ids are `<NNN>-<slug>`, allocated sequentially (Tier 1)
+
+- **Problem:** ids were `T-<date>-<slug>`, so the *first* thing in an id
+  was the least useful thing in it. D37 made any fragment resolve, which
+  helped, but the underlying shape was still wrong: a date is not a
+  handle, and nothing in the id was short enough to say out loud.
+- **Why:** three mature conventions independently converged on the same
+  answer — Architecture Decision Records (`0001-record-architecture-decisions.md`),
+  Django migrations (`0001_initial.py`), and GitHub's Spec Kit
+  (`specs/001-feature-name/`, allocated by scanning the directory for
+  the highest `^[0-9]{3,}-` prefix and adding one). They keep *both* a
+  short number and a readable slug rather than choosing. Jira and Linear
+  add a project key (`API-7`) for the same handle reason, which is why
+  `task_key` exists as an option rather than a requirement.
+- **The known cost, taken deliberately:** Rails abandoned sequential
+  migration numbering for timestamps precisely because two developers
+  branching concurrently both allocate `007`. Reins keeps sequential
+  anyway, because the failure is *benign here* and the cure is worse:
+  ids are identity, not an execution order, so a duplicate number is a
+  naming clash, never a corrupt run — while timestamp ids would restore
+  exactly the unusable-handle problem this decision exists to fix. The
+  collision is handled where it can surface: `ids.match` refuses an
+  ambiguous reference rather than guessing, `task list` marks clashing
+  tasks with `!` and warns, and both tasks stay individually
+  addressable by name. Refusing beats guessing; both beat a timestamp
+  nobody can type.
+- **Smallest change:** a new `reins/ids.py` owning identity as pure
+  functions — `slugify`, `parse`, `format_id`, `next_number`,
+  `allocate`, `duplicate_numbers`, `match` — with the CLI supplying only
+  the filesystem and the error text. Allocation is derived from the
+  directory (a counter file would conflict on every branch and lie
+  whenever edited) and **never reuses a number**, even after a deletion,
+  because an id is hashed into the artifact chain and a reused number
+  would collide with evidence that still exists in telemetry, in a
+  `followup:` ref, or on a merged branch. For the same reason there is
+  no renumber operation and never will be. `request.md` now carries
+  `title:`, since the title stopped being recoverable from the id;
+  matching searches titles as well as ids, so `status request-id` still
+  works when the id is `007-...`.
+- **Replaces a guarantee it would otherwise have broken:** duplicate
+  follow-up creation used to be backstopped by same-title-same-day slug
+  collision. Numbered ids never collide, so that check is now content
+  based — same `source_ref` plus a byte-identical body — which is
+  strictly stronger: it also catches a runtime that re-words the title.
+- **Why not architectural:** additive and confined to identity. No
+  contract, gate, status, decision type or telemetry metric changed;
+  `title:` is an optional frontmatter field the validator does not
+  require, so requests written before it still validate. Fixtures were
+  regenerated to the new scheme and remain byte-reproducible.

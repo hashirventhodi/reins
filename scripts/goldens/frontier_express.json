@@ -8,6 +8,6 @@
   "next_contract": null,
   "reason": "review verdict approve; merge (gate 3 of 3) belongs to the human and git",
   "status": "AWAITING_MERGE",
-  "task": "T-2026-07-25-retry-debug-log",
+  "task": "001-retry-debug-log",
   "warnings": []
 }

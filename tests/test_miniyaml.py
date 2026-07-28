@@ -172,7 +172,7 @@ def test_dump_matches_fixture_frontmatter_style():
     fm = {
         "pipeline": 1,
         "contract": "review",
-        "task": "T-2026-07-25-request-id-header",
+        "task": "001-request-id-header",
         "produced_at": "2026-07-25T09:55:00Z",
         "consumes": [
             {"artifact": "intent", "hash": "sha256:aaaa"},
@@ -183,7 +183,7 @@ def test_dump_matches_fixture_frontmatter_style():
     assert miniyaml.dumps(fm) == (
         "pipeline: 1\n"
         "contract: review\n"
-        "task: T-2026-07-25-request-id-header\n"
+        "task: 001-request-id-header\n"
         "produced_at: 2026-07-25T09:55:00Z\n"
         "consumes:\n"
         "- artifact: intent\n"

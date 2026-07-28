@@ -32,7 +32,7 @@ Every agent session inherits these; they outrank session-level judgment:
   the system sees; the friction log captures what it cannot.
 
 ## Commands that aren't obvious
-- `python3 -m pytest -q` — 345 tests; must stay green.
+- `python3 -m pytest -q` — 383 tests; must stay green.
 - `python3 scripts/selftest.py` — stdlib-only fresh-clone acceptance (D30);
   must pass under the oldest supported interpreter (3.9).
 - `python3 scripts/selftest.py --regen` — ONLY after an intentional
@@ -53,9 +53,13 @@ Every agent session inherits these; they outrank session-level judgment:
 - Never reintroduce PyYAML (or any dependency). Frontmatter/ledger/config
   YAML is the `reins/miniyaml.py` restricted subset (D30); anything
   outside it must fail loudly, not get a new parser feature by default.
-- Task arguments accept any unambiguous fragment of the id (D37); exact
-  ids always win, and ambiguity refuses with a candidate list rather
-  than guessing. Never widen this to a "best" match.
+- Task ids are `<NNN>-<slug>` (D38) and are **immutable**: they are
+  hashed into the artifact chain, so there is no renumber operation and
+  allocation must never reuse a number, even after a deletion.
+- Task arguments accept the number, the id, or any unambiguous fragment
+  of id or title (D37/D38); exact ids always win, and ambiguity refuses
+  with a candidate list rather than guessing. Never widen this to a
+  "best" match.
 - Never hand-compute or retype artifact hashes or candidate bodies; use
   `reins hash` / `reins frontmatter --pin` / mechanical extraction.
 - Two reference identities, not interchangeable (D16): `sha256:<64 hex>` for

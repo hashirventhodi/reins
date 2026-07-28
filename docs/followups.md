@@ -32,7 +32,8 @@ relays the human's explicit selection by invoking `reins task add`
 once per selected candidate — title/body extracted from the JSON
 mechanically (jq/python, never retyped; `creation_body()` is the
 normative byte spec), skipping `already_created` candidates, with the
-same-day slug collision in `task add` as the deterministic backstop. Reins never touches
+duplicate-request check in `task add` — same `source_ref` plus a
+byte-identical body — as the deterministic backstop (D38). Reins never touches
 external trackers and remains unaware `followup:` means anything.
 
 ## The convention (normative for runtimes)

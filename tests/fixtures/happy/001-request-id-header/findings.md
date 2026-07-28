@@ -1,13 +1,13 @@
 ---
 pipeline: 1
 contract: findings
-task: T-2026-07-25-request-id-header
+task: 001-request-id-header
 produced_at: 2026-07-25T09:12:00Z
 consumes:
 - artifact: request
-  hash: sha256:670de3bce842994df4985d0cb623032589f234436782139368ea455b05f284a5
+  hash: sha256:066c768145ac8ee82d066eec752b2ce12f09ef1c5987f993fccc1cd4c9b450e1
 - artifact: intent
-  hash: sha256:3572fb1e77fcada4dd818311dde7d74c63845b0628166a4c0ba463002c24024a
+  hash: sha256:35fdc028aa6ea0304255fac14ab6df9df3e23b7546b7c88e965e45efcda39de3
 ---
 # Findings — request id tracing
 

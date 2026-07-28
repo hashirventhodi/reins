@@ -33,7 +33,7 @@ Thanks for your interest. Two ground rules shape everything here:
 
 ```console
 python3 -m pip install -e '.[dev]'   # pytest only; the product has no deps
-python3 -m pytest -q          # 345 tests, ~10s; must stay green
+python3 -m pytest -q          # 383 tests, ~10s; must stay green
 python3 scripts/selftest.py   # stdlib-only deployment acceptance (D30)
 python3 scripts/regen_fixtures.py   # after intentional fixture changes
 python3 scripts/selftest.py --regen # ONLY after intentional fixture changes:
